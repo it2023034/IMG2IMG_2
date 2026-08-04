@@ -1,0 +1,22 @@
+Here's a semantic description of the image based on your guidelines:
+
+**1. PLATFORM & LAYOUT IDENTIFICATION:**
+
+*   **Interface Category:** Messaging application view (contact details/profile screen).
+*   **Platform Branding:** Viber (indicated by "Viber's end-to-end encryption" text).
+*   **Layout Areas:** The interface is divided into a header area containing the contact image and name, followed by a list of settings/options.
+
+**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**
+
+*   **Contact Name:** Richard Coleman
+*   **Phone Number:** +44 7511 998 204 (Mobile)
+*   **International Dialing Code:** +44 (United Kingdom)
+*   **Encryption Information:** "Messages in this chat are protected by Viber's end-to-end encryption."
+*   **Settings/Options Text:**
+    *   "Mute notifications"
+    *   "Custom notifications"
+    *   "Media visibility"
+
+**3. EXCLUSION OF SECONDARY NOISE:**
+
+*   The image excludes any content of messages, specific notification settings details beyond the option names, and other minor UI elements.

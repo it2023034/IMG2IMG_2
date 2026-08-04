@@ -1,0 +1,26 @@
+Person          | has_role        | Role
+Person          | has_phone       | Phone --> number/string + country code
+Person          | wears           | Attire
+Person          | affiliated_with | Organization
+(Person          | affiliated_with | Nation)
+Person          | located_in      | Location
+Person          | originates_from | Location
+
+Profile_Page    | depicts_person  | Person
+Profile_Page    | displays_symbol | Visual_Symbol
+Profile_Page    | has_url         | URL
+
+(Phone           | originates_from | Nation)
+
+Data_Interface  | belongs_to_org  | Organization
+Data_Interface  | depicts_person  | Person
+Data_Interface  | displays_metric | Financial_Metric
+Financial_Metric| shows_trend     | Performance_Trend
+
+- person has phone country code
+- person has country code Location
+Person_1 located_in http://dbpedia.org/resource/Greece
+Person located_in https://dbpedia.org/ontology/Location
+
+Data_Interface --> Investment_Account_Page
+total_balance --> relation

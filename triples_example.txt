@@ -1,0 +1,23 @@
+EXAMPLE INPUT TEXT:
+"The Instagram profile depicts Elena Rostova working as an Officer, who is affiliated with the Organisation 'Red Cross' in Germany. The profile displays a German flag."
+
+EXAMPLE AVAILABLE ENTITIES:
+Profile_Page_1 | rdf:type | Profile_Page
+Profile_Page_1 | label | "http://dbpedia.org/resource/Instagram"
+Person_1 | rdf:type | http://dbpedia.org/ontology/Person
+Person_1 | label | "Elena Rostova"
+Role_1 | rdf:type | Role
+Role_1 | label | "Officer"
+Organisation_1 | rdf:type | http://dbpedia.org/ontology/Organisation
+Organisation_1 | label | "Red Cross"
+Location_1 | rdf:type | http://dbpedia.org/ontology/Location
+Location_1 | label | "http://dbpedia.org/resource/Germany"
+Visual_Symbol_1 | rdf:type | Visual_Symbol
+Visual_Symbol_1 | label | "German flag"
+
+EXAMPLE OUTPUT RELATION TRIPLES:
+Profile_Page_1 | depicts_person | Person_1
+Profile_Page_1 | displays_symbol | Visual_Symbol_1
+Person_1 | has_role | Role_1
+Person_1 | affiliated_with | Organisation_1
+Person_1 | located_in | Location_1

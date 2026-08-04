@@ -1,0 +1,31 @@
+Here's a precise, highly focused semantic description of the image/interface screenshot, adhering to your strict guidelines:
+
+**1. PLATFORM & LAYOUT IDENTIFICATION:**
+
+*   **Interface Category:** Social Media Profile View
+*   **Platform Branding:** Facebook
+*   **Layout Areas:** Header section (cover photo and profile picture), "Intro" panel (left-hand side), "Posts" panel (right-hand side).
+*   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo.
+
+**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**
+
+*   **Profile Name:** Michael Anderson
+*   **URL:** https://www.facebook.com/michael.anderson.us.marine
+*   **Title/Affiliation:** US Marine | Proud to serve my country 🇺🇸
+*   **Intro Information:**
+    *   United States Marine Corps
+    *   Currently in Syria
+    *   From Texas, USA
+    *   Widowed
+    *   Father of one son
+    *   Joined May 2014
+*   **Friends Count:** 142
+*   **Post Text (December 24, 2023):** "Another day, another mission. Proud to serve. Miss the ones I love. God bless the USA 🇺🇸"
+*   **Numeric Metrics (Post):** 187 reactions, 26 comments, 8 shares
+
+**3. EXCLUSION OF SECONDARY NOISE:**
+
+*   All post content beyond the extracted text snippet.
+*   Details of individual friends listed.
+*   Minor UI elements like filters and "Message" button details.
+*   Any temporary metadata or status updates not explicitly requested.

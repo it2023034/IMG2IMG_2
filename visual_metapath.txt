@@ -1,0 +1,18 @@
+Person                  | has_role          | Role
+Person                  | affiliated_with   | Organisation
+Person                  | located_in        | Location
+Person                  | originates_from   | Location
+
+Person                  | has_phone_number  | String
+Location                | has_phone_code    | String
+
+Profile_Page            | depicts_person    | Person
+Profile_Page            | displays_symbol   | Visual_Symbol
+Profile_Page            | has_url           | URL
+
+Investment_Account_Page | belongs_to        | Organisation
+Investment_Account_Page | depicts_person    | Person
+Investment_Account_Page | has_url           | URL
+Investment_Account_Page | has_total_balance | String
+Investment_Account_Page | has_total_profit  | String
+Investment_Account_Page | has_total_loss    | String

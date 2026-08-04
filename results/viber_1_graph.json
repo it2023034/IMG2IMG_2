@@ -1,0 +1,55 @@
+[
+    {
+        "image": "viber_1.png",
+        "description": "Here's a semantic description of the image based on your guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Messaging application contact information view.\n*   **Platform Branding:** Viber (indicated by logo and UI elements). The layout is a full-screen contact details panel, typical of mobile messaging apps.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Contact Name:** Michael Anderson\n*   **Phone Number:** +44 7405 812 443 (full sequence with international dialing prefix)\n*   **Phone Number Type:** Mobile\n*   **Title/Header:** Contact info\n*   **Numeric Metric:** \"45\" (associated with \"Media, links and files\")\n*   **Geopolitical Reference:** United Kingdom (+44 country code)\n*   **Text Labels:**\n    *   Free call\n    *   Video call\n    *   Search\n    *   Mute notifications\n    *   Custom notifications\n    *   Media visibility (On)\n    *   Encryption\n    *   Disappearing messages (Off)\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   The image content of the media files is excluded.\n*   Details about Viber's end-to-end encryption beyond the label are omitted.\n*   UI control elements like toggle switches and arrow icons are noted but not described in detail.",
+        "entities": [
+            {
+                "subject": "Person_1",
+                "predicate": "rdf:type",
+                "object": "http://dbpedia.org/ontology/Person"
+            },
+            {
+                "subject": "Person_1",
+                "predicate": "label",
+                "object": "Michael Anderson"
+            },
+            {
+                "subject": "Location_1",
+                "predicate": "rdf:type",
+                "object": "http://dbpedia.org/ontology/Location"
+            },
+            {
+                "subject": "Location_1",
+                "predicate": "label",
+                "object": "http://dbpedia.org/resource/United_Kingdom"
+            },
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "rdf:type",
+                "object": "Profile_Page"
+            },
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "label",
+                "object": "http://dbpedia.org/resource/Viber"
+            }
+        ],
+        "relations": [
+            {
+                "subject": "Person_1",
+                "predicate": "has_phone_number",
+                "object": "+44 7405 812 443"
+            },
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "depicts_person",
+                "object": "Person_1"
+            },
+            {
+                "subject": "Location_1",
+                "predicate": "has_phone_code",
+                "object": "+44"
+            }
+        ]
+    }
+]

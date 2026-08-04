@@ -1,0 +1,38 @@
+Here's a semantic description of the image based on your guidelines:
+
+**1. PLATFORM & LAYOUT IDENTIFICATION:**
+
+*   **Interface Category:** Trading Dashboard
+*   **Platform Branding:** CapitalFxPro
+*   **Domain URL:** https://capitalfxpro-market.net
+*   **Layout Areas:** The interface is divided into sections including a header, account summary panel, account growth chart, recent trading activity table, and asset allocation pie chart.
+
+**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**
+
+*   **Organization Name:** CapitalFxPro
+*   **Tagline:** Trade. Invest. Grow.
+*   **User Profile:** "MP" - Standard Investor (associated with user "Mary Pappa")
+*   **Account Summary Metrics:**
+    *   Total Balance: €12,564.32 (+€2,584.32 (25.67%) All Time)
+    *   Today's Profit: €384.15 (+3.14% Yesterday)
+    *   Total Invested: €10,000.00 (Initial Deposit)
+    *   Available Balance: €2,564.32 (Withdrawable)
+    *   Current Value: €12,564.32
+*   **Recent Trading Activity:**
+    *   BUY EUR/USD - Amount: €2,000.00 - Profit/Loss: €68.45 - Status: Completed
+    *   BUY Gold (XAU/USD) - Amount: €1,500.00 - Profit/Loss: €54.20 - Status: Completed
+    *   SELL Bitcoin (BTC/EUR) - Amount: €1,000.00 - Profit/Loss: €34.12 - Status: Completed
+*   **Asset Allocation:**
+    *   Forex: 45.0%
+    *   Commodities: 25.0%
+    *   Cryptocurrency: 20.0%
+    *   Other Assets: 10.0%
+
+**3. EXCLUSION OF SECONDARY NOISE:**
+
+*   Chart axis labels and specific data points within the account growth chart are excluded.
+*   Details of minor UI elements (buttons, icons) beyond those identifying sections are omitted.
+
+
+
+This description focuses on the core information presented in the image while adhering to your specified filtering guidelines.
