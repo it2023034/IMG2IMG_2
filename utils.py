@@ -7,6 +7,26 @@ def clean_term(text):
     text = re.sub(r'\(.*?\)', '', text)
     return text.strip(" -.*\"'")
 
+def clean_literal_value(predicate, value):
+    """
+    Καθαρίζει τα literals (όπως balances, profits, losses) 
+    από υπολειπόμενες παρενθέσεις ή extra κείμενο (π.χ. 'All Time)').
+    """
+    if not isinstance(value, str):
+        return value
+    
+    p_lower = predicate.lower()
+    
+    # 1. Καθαρισμός χρηματικών ποσών (balance, profit, loss)
+    if any(k in p_lower for k in ["balance", "profit", "loss"]):
+        match = re.search(r'([$€£¥]?\s*[\d,]+(?:\.\d+)?)', value)
+        if match:
+            return match.group(1).strip()
+            
+    # 2. Γενικός καθαρισμός για ορφανές παρενθέσεις στο τέλος
+    value = re.sub(r'\s*\b[A-Za-z\s]*\)$', '', value).strip()
+    return value
+
 def parse_triples(raw_output):
     extracted_data = []
     lines = raw_output.strip().split('\n')
@@ -98,18 +118,15 @@ def apply_dynamic_ner_filtering(img_name, ner_list):
     img_name_lower = img_name.lower()
 
     if "viber" in img_name_lower:
-        print(f"--> Detected VIBER interface ({img_name}). Filtering out Roles and applying Viber rules...")
         allowed_viber_classes = {"profile_page", "person", "location"}
         return filter_ner_by_allowed_classes(ner_list, allowed_viber_classes)
 
     elif any(k in img_name_lower for k in ["fb", "facebook", "profile"]):
-        print(f"--> Detected Profile interface ({img_name}). Applying strict Profile NER filtering...")
-        allowed_profile_classes = {"profile_page", "person", "location", "role", "organisation", "url"}
+        allowed_profile_classes = {"profile_page", "person", "location", "organisation", "visual_symbol"}
         return filter_ner_by_allowed_classes(ner_list, allowed_profile_classes)
 
     elif any(k in img_name_lower for k in ["dashboard", "chart", "trading", "analytics"]):
-        print(f"--> Detected DASHBOARD interface ({img_name}). Applying strict NER filtering...")
-        allowed_dashboard_classes = {"investment_account_page", "organisation", "person", "url"}
+        allowed_dashboard_classes = {"investment_account_page", "organisation", "person"}
         return filter_ner_by_allowed_classes(ner_list, allowed_dashboard_classes)
 
     return ner_list
@@ -126,38 +143,6 @@ def extract_allowed_classes_from_schema(schema_content):
                 allowed_classes.add(parts[2].strip().lower())
                 
     return allowed_classes
-
-def inject_missing_role_relations(ner_list, cleaned_relations, img_name=""):
-    if "viber" in img_name.lower():
-        return cleaned_relations
-
-    person_ids = [
-        e["subject"] for e in ner_list 
-        if e.get("predicate", "").lower() in ["rdf:type", "type"] and str(e.get("object", "")).lower().replace('"', '') == "person"
-    ]
-    role_ids = [
-        e["subject"] for e in ner_list 
-        if e.get("predicate", "").lower() in ["rdf:type", "type"] and str(e.get("object", "")).lower().replace('"', '') == "role"
-    ]
-
-    if person_ids and role_ids:
-        for p_id in person_ids:
-            for r_id in role_ids:
-                exists = any(
-                    str(r.get("subject")).lower() == str(p_id).lower() and 
-                    str(r.get("predicate")).lower() == "has_role" and
-                    str(r.get("object")).lower() == str(r_id).lower() 
-                    for r in cleaned_relations
-                )
-                if not exists:
-                    cleaned_relations.append({
-                        "subject": p_id,
-                        "predicate": "has_role",
-                        "object": r_id
-                    })
-                    print(f"[AUTO-INJECT] Connected {p_id} -> has_role -> {r_id}")
-
-    return cleaned_relations
 
 def filter_relations_by_schema(raw_relations, extracted_entities, schema_content, id_map=None):
     if id_map is None:
@@ -205,7 +190,7 @@ def filter_relations_by_schema(raw_relations, extracted_entities, schema_content
         p_lower = p.lower()
         o_lower = o.lower()
 
-        literal_keywords = ["phone", "string", "literal", "balance", "profit", "loss"]
+        literal_keywords = ["phone", "string", "literal", "balance", "profit", "loss", "role", "url", "code"]
         is_literal_relation = any(k in p_lower for k in literal_keywords)
         
         if s_lower not in valid_entity_ids:
@@ -218,7 +203,7 @@ def filter_relations_by_schema(raw_relations, extracted_entities, schema_content
             continue
 
         raw_s_type = entity_types.get(s_lower, re.sub(r'_\d+$', '', s_lower))
-        raw_o_type = entity_types.get(o_lower, re.sub(r'_\d+$', '', o_lower)) if not is_literal_relation else "xsd:string"
+        raw_o_type = entity_types.get(o_lower, re.sub(r'_\d+$', '', o_lower)) if not is_literal_relation else "string"
 
         match_found = False
         for valid_sub, valid_obj in allowed_schema[p_lower]:
@@ -243,20 +228,15 @@ def filter_relations_by_schema(raw_relations, extracted_entities, schema_content
 
 def clean_graph_entities(ner_list, valid_relations, schema_content):
     allowed_classes = extract_allowed_classes_from_schema(schema_content)
-    
     valid_schema_ids = set()
-    role_entity_ids = set()
 
     for ent in ner_list:
         pred = str(ent.get("predicate", "")).lower()
         obj = str(ent.get("object", "")).lower().replace('"', '')
         subj = ent.get("subject")
 
-        if pred in ["rdf:type", "type"]:
-            if obj in allowed_classes:
-                valid_schema_ids.add(subj)
-            if obj == "role":
-                role_entity_ids.add(subj)
+        if pred in ["rdf:type", "type"] and obj in allowed_classes:
+            valid_schema_ids.add(subj)
 
     connected_ids = {rel.get("subject") for rel in valid_relations} | {rel.get("object") for rel in valid_relations}
 
@@ -266,7 +246,7 @@ def clean_graph_entities(ner_list, valid_relations, schema_content):
         s_lower = s.lower() if s else ""
 
         if s in valid_schema_ids:
-            if s in connected_ids or any(k in s_lower for k in ["page", "account", "interface", "profile"]) or s in role_entity_ids:
+            if s in connected_ids or any(k in s_lower for k in ["page", "account", "interface", "profile"]):
                 final_entities.append(ent)
 
     return final_entities, valid_relations
@@ -274,8 +254,6 @@ def clean_graph_entities(ner_list, valid_relations, schema_content):
 def process_pipeline_relations(raw_relations_str, ner_list, schema_content, id_map, img_name=""):
     relations_list = parse_triples(raw_relations_str)
     cleaned_relations = clean_and_deduplicate(relations_list)
-    
-    cleaned_relations = inject_missing_role_relations(ner_list, cleaned_relations, img_name=img_name)
     
     valid_relations = filter_relations_by_schema(
         cleaned_relations, 
@@ -319,6 +297,7 @@ def post_process_graph(graph_entry):
     relations = graph_entry.get("relations", [])
     entities = graph_entry.get("entities", [])
 
+    # 1. Φιλτράρισμα ειδικών Viber κανόνων
     if "viber" in description or "viber" in img_name:
         relations = [
             rel for rel in relations 
@@ -326,22 +305,80 @@ def post_process_graph(graph_entry):
                     and str(rel.get("predicate", "")).lower() in ["located_in", "originates_from"])
         ]
 
-    clean_rels = [
-        rel for rel in relations 
-        if str(rel.get("object", "")).strip().lower() not in ["string", "none", "null", "xsd:string"]
-    ]
-        
-    # --- ΠΡΟΣΘΗΚΗ: Διασφάλιση DBpedia Link για Profile_Page ---
-    profile_ids = {
-        ent["subject"] for ent in entities 
-        if str(ent.get("predicate")).lower() in ["rdf:type", "type"] and str(ent.get("object")).lower() == "profile_page"
-    }
-    for ent in entities:
-        if ent.get("subject") in profile_ids and str(ent.get("predicate")).lower() == "label":
-            val = str(ent.get("object")).strip('"\'')
-            if not val.startswith("http"):
-                ent["object"] = f"http://dbpedia.org/resource/{val.capitalize()}"
+    # 2. Καθαρισμός κενών/placeholder literals & Εφαρμογή Clean Literals
+    clean_rels = []
+    for rel in relations:
+        obj_val = str(rel.get("object", "")).strip()
+        if obj_val.lower() not in ["string", "none", "null", "xsd:string"]:
+            pred = rel.get("predicate", "")
+            # Καθαρίζουμε το string του object (π.χ. αφαίρεση 'All Time)')
+            rel["object"] = clean_literal_value(pred, obj_val)
+            clean_rels.append(rel)
 
-    graph_entry["entities"] = apply_rdf_ontology_mapping(entities)
+    # 3. Εντοπισμός τύπου (class) για κάθε subject
+    subject_types = {}
+    for ent in entities:
+        s = ent.get("subject")
+        p = str(ent.get("predicate")).lower()
+        o = str(ent.get("object")).lower().replace('"', '').replace("'", '')
+        if p in ["rdf:type", "type"]:
+            subject_types[s] = o
+
+    # 4. Fail-safe: Αυτόματη διασφάλιση της σχέσης depicts_person
+    profile_acc_ids = [subj for subj, stype in subject_types.items() if any(k in stype for k in ["profile_page", "investment_account_page"])]
+    person_ids = [subj for subj, stype in subject_types.items() if "person" in stype]
+    
+    if profile_acc_ids and person_ids:
+        has_depicts = any(str(r.get("predicate", "")).lower() == "depicts_person" for r in clean_rels)
+        if not has_depicts:
+            clean_rels.append({
+                "subject": profile_acc_ids[0],
+                "predicate": "depicts_person",
+                "object": person_ids[0]
+            })
+
+    # 5. Ενιαίος μετασχηματισμός Entities
+    processed_entities = []
+    for ent in entities:
+        subj = ent.get("subject")
+        pred = str(ent.get("predicate")).strip()
+        obj = str(ent.get("object")).strip()
+        
+        stype = subject_types.get(subj, "").lower()
+        is_label_pred = pred.lower() in ["label", "rdfs:label"]
+
+        # Κανόνας A: Αφαίρεση label από Investment_Account_Page
+        if "investment_account_page" in stype and is_label_pred:
+            continue
+
+        # Κανόνας B: Μετατροπή label σε platform για Profile_Page
+        if "profile_page" in stype and is_label_pred:
+            processed_entities.append({
+                "subject": subj,
+                "predicate": "platform",
+                "object": obj
+            })
+            continue
+
+        # 🌟 Κανόνας C (NEW): Μετατροπἠ label σε owl:sameAs για Location με DBpedia URI
+        if "location" in stype and is_label_pred and obj.startswith("http://dbpedia.org/"):
+            processed_entities.append({
+                "subject": subj,
+                "predicate": "owl:sameAs",
+                "object": obj
+            })
+            continue
+
+        # Κανόνας D: Αλλαγή του 'label' σε 'rdfs:label' για όλα τα υπόλοιπα
+        if pred.lower() == "label":
+            pred = "rdfs:label"
+
+        processed_entities.append({
+            "subject": subj,
+            "predicate": pred,
+            "object": obj
+        })
+
+    graph_entry["entities"] = apply_rdf_ontology_mapping(processed_entities)
     graph_entry["relations"] = clean_rels
     return graph_entry

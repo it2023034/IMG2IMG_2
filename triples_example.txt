@@ -3,17 +3,17 @@ EXAMPLE INPUT TEXT:
 
 EXAMPLE AVAILABLE ENTITIES:
 Profile_Page_1 | rdf:type | Profile_Page
-Profile_Page_1 | label | "http://dbpedia.org/resource/Instagram"
+Profile_Page_1 | platform | "http://dbpedia.org/resource/Instagram"
 Person_1 | rdf:type | http://dbpedia.org/ontology/Person
-Person_1 | label | "Elena Rostova"
+Person_1 | rdfs:label | "Elena Rostova"
 Role_1 | rdf:type | Role
-Role_1 | label | "Officer"
+Role_1 | rdfs:label | "Officer"
 Organisation_1 | rdf:type | http://dbpedia.org/ontology/Organisation
-Organisation_1 | label | "Red Cross"
+Organisation_1 | rdfs:label | "Red Cross"
 Location_1 | rdf:type | http://dbpedia.org/ontology/Location
-Location_1 | label | "http://dbpedia.org/resource/Germany"
+Location_1 | rdfs:label | "http://dbpedia.org/resource/Germany"
 Visual_Symbol_1 | rdf:type | Visual_Symbol
-Visual_Symbol_1 | label | "German flag"
+Visual_Symbol_1 | rdfs:label | "German flag"
 
 EXAMPLE OUTPUT RELATION TRIPLES:
 Profile_Page_1 | depicts_person | Person_1

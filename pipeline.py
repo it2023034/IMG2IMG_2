@@ -54,8 +54,12 @@ def extract_original_triples():
         raw_ner_triples = utils.parse_triples(raw_ner_str)
         cleaned_ner = utils.clean_and_deduplicate(raw_ner_triples)
         
-        # Dynamic NER Filtering (Viber, Profile, Dashboard rules)
-        filtered_ner = utils.apply_dynamic_ner_filtering(img_name, cleaned_ner)
+        # Dynamic NER Filtering (αν υπάρχει στο utils.py)
+        if hasattr(utils, 'apply_dynamic_ner_filtering'):
+            filtered_ner = utils.apply_dynamic_ner_filtering(img_name, cleaned_ner)
+        else:
+            allowed_classes = utils.extract_allowed_classes_from_schema(schema_content)
+            filtered_ner = utils.filter_ner_by_allowed_classes(cleaned_ner, allowed_classes)
         
         # Deduplicate & Re-index IDs
         ner_list, id_map = utils.deduplicate_entities_by_label(filtered_ner)
@@ -72,7 +76,7 @@ def extract_original_triples():
             lambda d, s, e, n: prompts.get_relation_extraction_prompt(d, s, e, n)
         )
         
-        # Process Relations & Entities (Περάστηκε το img_name)
+        # Process Relations & Entities
         final_entities, valid_relations = utils.process_pipeline_relations(
             raw_relations_str, 
             ner_list, 
@@ -90,7 +94,7 @@ def extract_original_triples():
             "relations": valid_relations
         }
         
-        # 5. Apply Post-Processing (DBpedia Ontologies, labels, Viber cleans)
+        # 5. Apply Post-Processing
         graph_entry = utils.post_process_graph(graph_entry)
         
         # 6. Save Final Graph JSON
@@ -119,7 +123,6 @@ def run_image_generation():
 
     entities = graph_data.get("entities", [])
     
-    # Διορθωμένες κλάσεις προτεραιότητας με 'organisation'
     target_classes_priority = ['role', 'visual_symbol', 'account_name', 'organisation', 'location']
     
     target_entity = None
@@ -137,7 +140,7 @@ def run_image_generation():
 
     if not target_entity:
         for ent in entities:
-            if ent.get("predicate") == "label":
+            if ent.get("predicate") in ["label", "rdfs:label"]:
                 target_entity = ent.get("subject")
                 break
 
@@ -147,7 +150,7 @@ def run_image_generation():
 
     change_from_label = ""
     for ent in entities:
-        if ent.get("subject") == target_entity and ent.get("predicate") == "label":
+        if ent.get("subject") == target_entity and ent.get("predicate") in ["label", "rdfs:label"]:
             change_from_label = ent.get("object")
             break
 
@@ -213,7 +216,7 @@ def generate_counterfactual_triples():
 
     updated = False
     for ent in cf_entities:
-        if ent["subject"] == target_id and ent["predicate"] == "label":
+        if ent["subject"] == target_id and ent["predicate"] in ["label", "rdfs:label"]:
             ent["object"] = new_value
             updated = True
             break

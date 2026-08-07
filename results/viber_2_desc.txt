@@ -10,7 +10,7 @@ Here's a semantic description of the image based on your guidelines:
 
 *   **Contact Name:** Richard Coleman
 *   **Phone Number:** +44 7511 998 204 (Mobile)
-*   **International Dialing Code:** +44 (United Kingdom)
+*   **International Dialing Prefix:** +44 (United Kingdom)
 *   **Encryption Information:** "Messages in this chat are protected by Viber's end-to-end encryption."
 *   **Settings/Options Text:**
     *   "Mute notifications"

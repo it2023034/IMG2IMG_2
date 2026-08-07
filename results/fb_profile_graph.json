@@ -1,7 +1,7 @@
 [
     {
         "image": "fb_profile.png",
-        "description": "Here's a precise, highly focused semantic description of the image/interface screenshot, adhering to your strict guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Social Media Profile View\n*   **Platform Branding:** Facebook\n*   **Layout Areas:** Header section (cover photo and profile picture), \"Intro\" panel (left-hand side), \"Posts\" panel (right-hand side).\n*   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Profile Name:** Michael Anderson\n*   **URL:** https://www.facebook.com/michael.anderson.us.marine\n*   **Title/Affiliation:** US Marine | Proud to serve my country 🇺🇸\n*   **Intro Information:**\n    *   United States Marine Corps\n    *   Currently in Syria\n    *   From Texas, USA\n    *   Widowed\n    *   Father of one son\n    *   Joined May 2014\n*   **Friends Count:** 142\n*   **Post Text (December 24, 2023):** \"Another day, another mission. Proud to serve. Miss the ones I love. God bless the USA 🇺🇸\"\n*   **Numeric Metrics (Post):** 187 reactions, 26 comments, 8 shares\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   All post content beyond the extracted text snippet.\n*   Details of individual friends listed.\n*   Minor UI elements like filters and \"Message\" button details.\n*   Any temporary metadata or status updates not explicitly requested.",
+        "description": "Here's a precise, highly focused semantic description of the image/interface screenshot, adhering to your strict guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Social Media Profile View\n*   **Platform Branding:** Facebook\n*   **Layout Areas:** Cover Photo Area, Profile Picture Area, Navigation Bar (top), Posts Section, \"Intro\" Information Panel, Friends List.\n*   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo, US Flag icon.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Profile Name:** Michael Anderson\n*   **URL:** https://www.facebook.com/michael.anderson.us.marine\n*   **Title/Affiliation:** US Marine | Proud to serve my country 🇺🇸\n*   **Intro Information:**\n    *   United States Marine Corps\n    *   Currently in Syria\n    *   From Texas, USA\n    *   Widowed\n    *   Father of one son\n    *   Joined May 2014\n*   **Friends Count:** 142\n*   **Post Text (December 24, 2023):** \"Another day, another mission. Proud to serve. Miss the ones I love. God bless the USA 🇺🇸\"\n*   **Numeric Metrics (Post):** 187 Reactions, 26 Comments, 8 Shares\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   All post content beyond the extracted text snippet.\n*   Details of individual friends in the \"See all friends\" list.\n*   Minor UI elements (e.g., scrollbars, button labels).\n*   Any temporary metadata or status updates not explicitly requested.\n\n\n\nThis description focuses solely on the core entities and their primary traits as visible within the screenshot, avoiding extraneous details.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -10,7 +10,7 @@
             },
             {
                 "subject": "Profile_Page_1",
-                "predicate": "label",
+                "predicate": "platform",
                 "object": "http://dbpedia.org/resource/Facebook"
             },
             {
@@ -20,28 +20,8 @@
             },
             {
                 "subject": "Person_1",
-                "predicate": "label",
+                "predicate": "rdfs:label",
                 "object": "Michael Anderson"
-            },
-            {
-                "subject": "Role_1",
-                "predicate": "rdf:type",
-                "object": "Role"
-            },
-            {
-                "subject": "Role_1",
-                "predicate": "label",
-                "object": "US Marine"
-            },
-            {
-                "subject": "Organisation_1",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Organisation"
-            },
-            {
-                "subject": "Organisation_1",
-                "predicate": "label",
-                "object": "United States Marine Corps"
             },
             {
                 "subject": "Location_1",
@@ -50,7 +30,7 @@
             },
             {
                 "subject": "Location_1",
-                "predicate": "label",
+                "predicate": "owl:sameAs",
                 "object": "http://dbpedia.org/resource/Texas"
             },
             {
@@ -60,18 +40,38 @@
             },
             {
                 "subject": "Location_2",
-                "predicate": "label",
+                "predicate": "owl:sameAs",
                 "object": "http://dbpedia.org/resource/Syria"
             },
             {
-                "subject": "URL_1",
+                "subject": "Location_3",
                 "predicate": "rdf:type",
-                "object": "URL"
+                "object": "http://dbpedia.org/ontology/Location"
             },
             {
-                "subject": "URL_1",
-                "predicate": "label",
-                "object": "https://www.facebook.com/michael.anderson.us.marine"
+                "subject": "Location_3",
+                "predicate": "owl:sameAs",
+                "object": "http://dbpedia.org/resource/United_States_of_America"
+            },
+            {
+                "subject": "Organisation_1",
+                "predicate": "rdf:type",
+                "object": "http://dbpedia.org/ontology/Organisation"
+            },
+            {
+                "subject": "Organisation_1",
+                "predicate": "rdfs:label",
+                "object": "United States Marine Corps"
+            },
+            {
+                "subject": "Visual_Symbol_1",
+                "predicate": "rdf:type",
+                "object": "Visual_Symbol"
+            },
+            {
+                "subject": "Visual_Symbol_1",
+                "predicate": "rdfs:label",
+                "object": "Facebook logo"
             }
         ],
         "relations": [
@@ -82,18 +82,28 @@
             },
             {
                 "subject": "Profile_Page_1",
+                "predicate": "displays_symbol",
+                "object": "Visual_Symbol_1"
+            },
+            {
+                "subject": "Profile_Page_1",
                 "predicate": "has_url",
-                "object": "URL_1"
+                "object": "https://www.facebook.com/michael.anderson.us.marine"
             },
             {
                 "subject": "Person_1",
                 "predicate": "has_role",
-                "object": "Role_1"
+                "object": "US Marine"
             },
             {
                 "subject": "Person_1",
                 "predicate": "affiliated_with",
                 "object": "Organisation_1"
+            },
+            {
+                "subject": "Person_1",
+                "predicate": "located_in",
+                "object": "Location_2"
             },
             {
                 "subject": "Person_1",
@@ -103,7 +113,7 @@
             {
                 "subject": "Person_1",
                 "predicate": "located_in",
-                "object": "Location_2"
+                "object": "Location_3"
             }
         ]
     }
