@@ -1,7 +1,7 @@
 import ollama
 from ollama import Client
 
-client = Client(host='http://localhost:11435')
+client = Client(host='http://localhost:11434')
 
 def generate_description(images, prompt):
     if isinstance(images, str):

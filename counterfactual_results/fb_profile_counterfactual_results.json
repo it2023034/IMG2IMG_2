@@ -1,7 +1,7 @@
 [
     {
-        "image": "fb_profile.png",
-        "description": "Here's a precise, highly focused semantic description of the image/interface screenshot, adhering to your strict guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Social Media Profile View\n*   **Platform Branding:** Facebook\n*   **Layout Areas:** Header section (cover photo and profile picture), \"Intro\" panel (left-hand side), \"Posts\" panel (right-hand side).\n*   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Profile Name:** Michael Anderson\n*   **URL:** https://www.facebook.com/michael.anderson.us.marine\n*   **Title/Affiliation:** US Marine | Proud to serve my country 🇺🇸\n*   **Intro Information:**\n    *   United States Marine Corps\n    *   Currently in Syria\n    *   From Texas, USA\n    *   Widowed\n    *   Father of one son\n    *   Joined May 2014\n*   **Friends Count:** 142\n*   **Post Text (December 24, 2023):** \"Another day, another mission. Proud to serve. Miss the ones I love. God bless the USA 🇺🇸\"\n*   **Numeric Metrics (Post):** 187 Reactions, 26 Comments, 8 Shares\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   All post content beyond the extracted text snippet.\n*   Minor UI elements like \"Message\" button and filters icon.\n*   Details of individual friend profiles in the \"See all friends\" section.\n\n\n\nThis description focuses solely on identifying core entities, their relationships, and key attributes as presented within the screenshot, avoiding extraneous details.",
+        "counterfactual_image": "fb_profile_cf.png",
+        "detected_change": "The original asset 'US Marine' was replaced by 'British Soldier'.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -88,7 +88,7 @@
             {
                 "subject": "Person_1",
                 "predicate": "has_role",
-                "object": "US Marine"
+                "object": "British Soldier"
             },
             {
                 "subject": "Person_1",

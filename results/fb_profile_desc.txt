@@ -4,8 +4,8 @@ Here's a precise, highly focused semantic description of the image/interface scr
 
 *   **Interface Category:** Social Media Profile View
 *   **Platform Branding:** Facebook
-*   **Layout Areas:** Cover Photo Area, Profile Picture Area, Navigation Bar (top), Posts Section, "Intro" Information Panel, Friends List.
-*   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo, US Flag icon.
+*   **Layout Areas:** Header section (cover photo and profile picture), "Intro" panel (left-hand side), "Posts" panel (right-hand side).
+*   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo.
 
 **2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**
 
@@ -26,10 +26,9 @@ Here's a precise, highly focused semantic description of the image/interface scr
 **3. EXCLUSION OF SECONDARY NOISE:**
 
 *   All post content beyond the extracted text snippet.
-*   Details of individual friends in the "See all friends" list.
-*   Minor UI elements (e.g., scrollbars, button labels).
-*   Any temporary metadata or status updates not explicitly requested.
+*   Minor UI elements like "Message" button and filters icon.
+*   Details of individual friend profiles in the "See all friends" section.
 
 
 
-This description focuses solely on the core entities and their primary traits as visible within the screenshot, avoiding extraneous details.
+This description focuses solely on identifying core entities, their relationships, and key attributes as presented within the screenshot, avoiding extraneous details.

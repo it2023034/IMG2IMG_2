@@ -39,32 +39,23 @@ def extract_original_triples():
         print(f"Processing Image: {img_name}")
         print(f"==========================================")
         
-        # 1. Visual Description Stage
         description = model.generate_description(img_path, prompts.get_description_prompt())
         utils.save_description_txt(description, img_name, RESULTS_DIR)
         
-        # 2. Named Entity Recognition (NER) Stage
         print(f"Extracting entities (NER) for {img_name}...")
         raw_ner_str = model.extract_entities(description, prompts.get_ner_prompt)
-        
-        print("\n--- RAW NER OUTPUT ---")
-        print(raw_ner_str)
-        print("----------------------")
         
         raw_ner_triples = utils.parse_triples(raw_ner_str)
         cleaned_ner = utils.clean_and_deduplicate(raw_ner_triples)
         
-        # Dynamic NER Filtering (αν υπάρχει στο utils.py)
         if hasattr(utils, 'apply_dynamic_ner_filtering'):
             filtered_ner = utils.apply_dynamic_ner_filtering(img_name, cleaned_ner)
         else:
             allowed_classes = utils.extract_allowed_classes_from_schema(schema_content)
             filtered_ner = utils.filter_ner_by_allowed_classes(cleaned_ner, allowed_classes)
         
-        # Deduplicate & Re-index IDs
         ner_list, id_map = utils.deduplicate_entities_by_label(filtered_ner)
 
-        # 3. Relation Extraction (RE) Stage
         print(f"Extracting relations for {img_name}...")
         filtered_ner_str = "\n".join([f"{e['subject']} | {e['predicate']} | {e['object']}" for e in ner_list])
         
@@ -76,7 +67,6 @@ def extract_original_triples():
             lambda d, s, e, n: prompts.get_relation_extraction_prompt(d, s, e, n)
         )
         
-        # Process Relations & Entities
         final_entities, valid_relations = utils.process_pipeline_relations(
             raw_relations_str, 
             ner_list, 
@@ -85,7 +75,6 @@ def extract_original_triples():
             img_name=img_name
         )
         
-        # 4. Construct Output Data Structure
         base_name = os.path.splitext(img_name)[0]
         graph_entry = {
             "image": img_name,
@@ -94,10 +83,7 @@ def extract_original_triples():
             "relations": valid_relations
         }
         
-        # 5. Apply Post-Processing
         graph_entry = utils.post_process_graph(graph_entry)
-        
-        # 6. Save Final Graph JSON
         utils.save_json([graph_entry], f"{base_name}_graph.json", RESULTS_DIR)
         print(f"[SUCCESS] Saved original graph JSON for {img_name}")
 
@@ -122,61 +108,78 @@ def run_image_generation():
         graph_data = json.load(f)[0]
 
     entities = graph_data.get("entities", [])
-    
-    target_classes_priority = ['role', 'visual_symbol', 'account_name', 'organisation', 'location']
+    relations = graph_data.get("relations", [])
     
     target_entity = None
-    for target_cls in target_classes_priority:
-        for ent in entities:
-            pred = str(ent.get("predicate", "")).lower()
-            obj = str(ent.get("object", "")).lower().replace('"', '')
-            subj = str(ent.get("subject", "")).lower()
+    change_from_label = ""
+    target_predicate = ""
 
-            if (pred in ["rdf:type", "type"] and obj == target_cls) or subj.startswith(target_cls):
-                target_entity = ent.get("subject")
-                break
-        if target_entity:
+    # 1. ΠΡΩΤΗ ΠΡΟΤΕΡΑΙΟΤΗΤΑ: Ψάχνουμε 'has_role' στα relations
+    for rel in relations:
+        p_lower = str(rel.get("predicate", "")).lower()
+        if p_lower == "has_role":
+            target_entity = rel.get("subject")
+            target_predicate = rel.get("predicate")
+            change_from_label = str(rel.get("object", ""))
+            print(f"[ROLE MATCH] Found explicit role triple: {target_entity} -> has_role -> '{change_from_label}'")
             break
 
+    # 2. FALLBACK: Αν δεν βρεθεί 'has_role', ψάχνουμε στις οντότητες
     if not target_entity:
-        for ent in entities:
-            if ent.get("predicate") in ["label", "rdfs:label"]:
-                target_entity = ent.get("subject")
+        print("[INFO] No 'has_role' predicate found in relations. Falling back to default entity selection.")
+        target_classes_priority = ['person', 'location', 'visual_symbol', 'organisation']
+        
+        for target_cls in target_classes_priority:
+            for ent in entities:
+                pred = str(ent.get("predicate", "")).lower()
+                obj = str(ent.get("object", "")).lower().replace('"', '')
+                subj = str(ent.get("subject", "")).lower()
+
+                if (pred in ["rdf:type", "type"] and target_cls in obj) or subj.startswith(target_cls):
+                    target_entity = ent.get("subject")
+                    break
+            if target_entity:
                 break
 
-    if not target_entity:
-        print("Could not find a suitable target entity for counterfactual modification.")
+        if target_entity:
+            for ent in entities:
+                p_lower = str(ent.get("predicate", "")).lower()
+                if ent.get("subject") == target_entity and p_lower in ["label", "rdfs:label", "owl:sameas"]:
+                    change_from_label = str(ent.get("object", ""))
+                    target_predicate = ent.get("predicate")
+                    break
+
+    if not target_entity or not change_from_label:
+        print("Could not find a valid entity or role for modification.")
         return
 
-    change_from_label = ""
-    for ent in entities:
-        if ent.get("subject") == target_entity and ent.get("predicate") in ["label", "rdfs:label"]:
-            change_from_label = ent.get("object")
-            break
+    clean_change_from = change_from_label.replace('"', '').strip()
 
-    print(f"Target selected for modification: {target_entity} ('{change_from_label}')")
+    print(f"Target selected for modification: {target_entity} [{target_predicate}] -> '{clean_change_from}'")
     
-    change_to_label = model.generate_description([], prompts.get_geometric_counterfactual_prompt(change_from_label))
-    print(f"LLM proposed alternative value: '{change_to_label}'")
+    change_to_label = model.generate_description([], prompts.get_geometric_counterfactual_prompt(clean_change_from))
+    change_to_label = change_to_label.strip(" \"'")
+    print(f"LLM proposed alternative asset: '{change_to_label}'")
 
     temp_edit = {
         "original_image": img_name,
         "target_entity": target_entity,
-        "change_from": change_from_label,
+        "target_predicate": target_predicate,
+        "change_from": clean_change_from,
         "change_to": change_to_label
     }
     with open('temporary_edit.json', 'w', encoding='utf-8') as f:
         json.dump(temp_edit, f, indent=4, ensure_ascii=False)
 
     print("Unloading Ollama VRAM to prepare for FLUX...")
-    os.system("curl http://localhost:11434/api/generate -d '{\"model\": \"gemma3:12b\", \"keep_alive\": 0}' > /dev/null 2>&1")
+    os.system("curl -s http://localhost:11434/api/generate -d '{\"model\": \"gemma3:12b\", \"keep_alive\": 0}' > /dev/null 2>&1")
 
     print("Loading FLUX Pipeline for Counterfactual Generation...")
     from pipeline_cf import CreateCounterfactualImage
     cf_generator = CreateCounterfactualImage()
     
     img_path = os.path.join(IMAGES_DIR, img_name)
-    cf_image = cf_generator.generate(change_from_label, change_to_label, img_path)
+    cf_image = cf_generator.generate(clean_change_from, change_to_label, img_path)
     
     cf_img_name = f"{base_name}_cf.png"
     cf_image.save(os.path.join(CF_IMAGES_DIR, cf_img_name))
@@ -198,33 +201,34 @@ def generate_counterfactual_triples():
 
     detected_change = f"The original asset '{temp_edit['change_from']}' was replaced by '{temp_edit['change_to']}'."
     
-    raw_graph_lines = []
-    for ent in original_graph_data["entities"]:
-        raw_graph_lines.append(f"{ent['subject']} | {ent['predicate']} | {ent['object']}")
-    for rel in original_graph_data["relations"]:
-        raw_graph_lines.append(f"{rel['subject']} | {rel['predicate']} | {rel['object']}")
-    original_graph_str = "\n".join(raw_graph_lines)
-
-    print("Applying Graph Edit reasoning...")
-    edit_instructions = model.extract_entities(original_graph_str, lambda g: prompts.get_counterfactual_prompt(g, detected_change))
-    
     cf_entities = [dict(d) for d in original_graph_data["entities"]]
     cf_relations = [dict(d) for d in original_graph_data["relations"]]
 
     target_id = temp_edit["target_entity"]
+    target_pred = temp_edit["target_predicate"]
     new_value = temp_edit["change_to"]
 
     updated = False
-    for ent in cf_entities:
-        if ent["subject"] == target_id and ent["predicate"] in ["label", "rdfs:label"]:
-            ent["object"] = new_value
+
+    # 1. ΠΡΩΤΗ ΠΡΟΤΕΡΑΙΟΤΗΤΑ: Ψάχνουμε στα RELATIONS (π.χ. Person_1 -> has_role -> 'British Soldier')
+    for rel in cf_relations:
+        if rel["subject"] == target_id and rel["predicate"].lower() == target_pred.lower():
+            rel["object"] = new_value
             updated = True
+            print(f"[RELATION EDIT APPLIED] Updated relation {target_id} -> {target_pred} -> '{new_value}'")
             break
 
-    if updated:
-        print(f"[EDIT APPLIED] Updated {target_id} label to '{new_value}'")
-    else:
-        print("[WARNING] Could not automatically apply graph edit to entities list.")
+    # 2. SECONDARY: Αν δεν βρέθηκε στα relations, ψάχνουμε στα ENTITIES (π.χ. rdfs:label)
+    if not updated:
+        for ent in cf_entities:
+            if ent["subject"] == target_id and ent["predicate"] in ["label", "rdfs:label"]:
+                ent["object"] = new_value
+                updated = True
+                print(f"[ENTITY EDIT APPLIED] Updated entity {target_id} label to '{new_value}'")
+                break
+
+    if not updated:
+        print("[WARNING] Could not automatically apply graph edit.")
 
     formatted_output = [{
         "counterfactual_image": f"{base_name}_cf.png",

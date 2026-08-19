@@ -1,7 +1,3 @@
-# =========================================================================
-# 1. VISUAL DESCRIPTION PROMPT (GENERIC)
-# =========================================================================
-
 def get_description_prompt():
     return """Analyse the provided image / interface screenshot and generate a precise, highly focused semantic description.
 
@@ -20,11 +16,6 @@ Follow these strict filtering guidelines:
    - Exclude status updates, general post contents, feed item details, minor operational buttons, UI control elements, and temporary metadata.
 
 Generate a clean, structured semantic description focused strictly on core entities and primary traits."""
-
-
-# =========================================================================
-# 2. NAMED ENTITY RECOGNITION (NER) PROMPT (GENERIC)
-# =========================================================================
 
 def get_ner_prompt(description):
     return f"""ROLE:
@@ -63,14 +54,6 @@ INPUT TEXT:
 NER TRIPLES:
 """.strip()
 
-
-# =========================================================================
-# 3. UNIFIED RELATION EXTRACTION (RE) PROMPT (GENERIC)
-# =========================================================================
-
-# =========================================================================
-# 3. UNIFIED RELATION EXTRACTION (RE) PROMPT
-# =========================================================================
 
 def get_relation_extraction_prompt(description, schema, examples, extracted_entities):
     return f"""ROLE:
@@ -119,14 +102,33 @@ INPUT TEXT DESCRIPTION:
 RELATION TRIPLES:
 """.strip()
 
+def get_geometric_counterfactual_prompt(change_from):
+    return f"""ROLE:
+You are a strict OSINT and Knowledge Graph Counterfactual Engine.
 
-# =========================================================================
-# 4. COUNTERFACTUAL PROMPTS (GENERIC)
-# =========================================================================
+TARGET ASSET TO REPLACE:
+'{change_from}'
+
+TASK:
+1. Determine the abstract semantic category of '{change_from}' (e.g. Job/Occupation/Role, Location, Person Name, Organisation, or Visual Symbol).
+2. Propose EXACTLY ONE alternative real-world instance of the EXACT SAME category, maintaining realistic context.
+
+RULES:
+- If '{change_from}' is a Job/Occupation/Role -> Propose a completely different specific Job/Occupation/Role.
+- If '{change_from}' is a Location -> Propose a completely different specific Location.
+- If '{change_from}' is a Name -> Propose a completely different specific Person Name.
+- If '{change_from}' is an Organisation/Symbol -> Propose a completely different equivalent entity.
+
+STRICT CONSTRAINTS:
+- DO NOT output schema ontology class names (e.g., 'Organisation', 'Location', 'Person', 'String', 'Role', 'Visual_Symbol').
+- DO NOT include quotes, explanations, prefixes, markdown, or commentary.
+- Output ONLY the replacement value itself (1-3 words max).
+""".strip()
+
 
 def get_counterfactual_prompt(original_graph, detected_change):
     return f"""ROLE:
-You are a strict Graph Editing Engine. Your job is to modify exactly ONE triple from the original knowledge graph to reflect a visually detected change.
+You are a strict Graph Editing Engine for OSINT Knowledge Graphs. Your goal is to update the original knowledge graph based on a single visual counterfactual edit.
 
 ORIGINAL GRAPH TRIPLES:
 {original_graph}
@@ -134,23 +136,13 @@ ORIGINAL GRAPH TRIPLES:
 DETECTED VISUAL CHANGE:
 "{detected_change}"
 
-STRICT COMPILER RULES:
-1. Analyze the DETECTED VISUAL CHANGE to identify which specific visual attribute, entity label, or text string was modified.
-2. Locate the corresponding Entity ID in ORIGINAL GRAPH TRIPLES that represents that element.
-3. Target the 'rdfs:label' predicate of that specific Entity ID to update its value.
-4. Output EXACTLY three structured lines following the template below.
+INSTRUCTIONS:
+1. Identify which entity and predicate in the original graph correspond to the detected change.
+2. Select the correct predicate from the graph schema based on the type of change (e.g., 'has_role' for occupations, 'located_in' or 'originates_from' for locations, 'rdfs:label' or 'label' for names/entities).
+3. Update ONLY the target triple to reflect the new value.
 
-OUTPUT TEMPLATE:
+OUTPUT TEMPLATE (EXACTLY 3 LINES):
 TARGET_SUBJECT: <Entity_ID>
-TARGET_PREDICATE: rdfs:label
-NEW_OBJECT: <New_Label_Value>
+TARGET_PREDICATE: <Target_Predicate>
+NEW_OBJECT: <New_Value>
 """.strip()
-
-
-def get_geometric_counterfactual_prompt(change_from):
-    return f"""You are a strict digital interface and counterfactual asset generator.
-The original interface contains an element described as: '{change_from}'.
-
-CRITICAL CONSTRAINT: Propose ONE alternative, logically coherent text string, identity name, role, visual symbol, or emblem that serves as a direct structural replacement for '{change_from}' within the same interface context.
-
-Respond with ONLY the name/value of the proposed replacement asset (1-4 words max). No explanations, no code tags, no conversational filler."""

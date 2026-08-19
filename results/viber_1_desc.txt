@@ -3,7 +3,7 @@ Here's a semantic description of the image based on your guidelines:
 **1. PLATFORM & LAYOUT IDENTIFICATION:**
 
 *   **Interface Category:** Messaging application contact information view.
-*   **Platform Branding:** Viber (indicated by logo in top right corner). The layout is a dark-themed, vertical scrolling contact details screen.
+*   **Platform Branding:** Viber (indicated by logo and UI elements). The layout is a full-screen contact details page within a messaging app.
 
 **2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**
 
@@ -11,17 +11,13 @@ Here's a semantic description of the image based on your guidelines:
 *   **Phone Number:** +44 7405 812 443 (displayed twice)
 *   **Dialing Code:** +44 (United Kingdom)
 *   **Section Title:** "Media, links and files"
-*   **Numeric Metric:** "45 >" (likely indicating the number of media items)
+*   **Numeric Metric:** "45" (likely indicating the number of media items)
 *   **Text Labels:** "Free call", "Video call", "Search", "Mute notifications", "Custom notifications", "Media visibility", "Encryption", "Disappearing messages"
-*   **Status Label:** "On >" (associated with Media Visibility)
+*   **Status Label:** "On" (associated with Media Visibility)
 *   **Status Label:** "Off" (associated with Disappearing Messages)
 
 **3. EXCLUSION OF SECONDARY NOISE:**
 
-*   The image content of the media files is excluded.
-*   Details about Viber's end-to-end encryption beyond the label are omitted.
-*   Any UI control elements like toggle switches or buttons (beyond their labels) are not described in detail.
-
-
-
-This description focuses solely on the core information presented within the screenshot, adhering to your specified filtering guidelines.
+*   The image excludes the content of the media files displayed below the contact information.
+*   It omits any contextual messaging or post details.
+*   It avoids describing the visual style or aesthetic elements beyond identifying Viber's branding.
