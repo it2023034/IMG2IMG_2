@@ -1,7 +1,7 @@
 [
     {
         "counterfactual_image": "fb_profile_cf.png",
-        "detected_change": "The original asset 'US Marine' was replaced by 'British Soldier'.",
+        "detected_change": "The original asset 'Syria' was replaced by 'Serbia'.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -41,7 +41,7 @@
             {
                 "subject": "Location_2",
                 "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/Syria"
+                "object": "http://dbpedia.org/resource/Serbia"
             },
             {
                 "subject": "Location_3",
@@ -88,7 +88,7 @@
             {
                 "subject": "Person_1",
                 "predicate": "has_role",
-                "object": "British Soldier"
+                "object": "US Marine"
             },
             {
                 "subject": "Person_1",

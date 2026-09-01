@@ -1,4 +1,5 @@
 def get_description_prompt():
+    # Prompt για τη δημιουργία ακριβούς και εστιασμένης σημασιολογικής περιγραφής εικόνας ή διεπαφής.
     return """Analyse the provided image / interface screenshot and generate a precise, highly focused semantic description.
 
 Follow these strict filtering guidelines:
@@ -18,6 +19,7 @@ Follow these strict filtering guidelines:
 Generate a clean, structured semantic description focused strictly on core entities and primary traits."""
 
 def get_ner_prompt(description):
+    # Prompt για την αναγνώριση και αρχικοποίηση οντοτήτων (NER) με βάση καθορισμένη οντολογία.
     return f"""ROLE:
 You are an expert Visual & Interface Named Entity Recognition (NER) system. Your task is to identify and initialize discrete entities from the input text using ONLY the allowed target ontology.
 
@@ -56,6 +58,7 @@ NER TRIPLES:
 
 
 def get_relation_extraction_prompt(description, schema, examples, extracted_entities):
+    # Prompt για την εξαγωγή και σύνδεση σχέσεων μεταξύ των αναγνωρισμένων οντοτήτων στο Knowledge Graph.
     return f"""ROLE:
 You are an expert, deterministic Knowledge Graph Relation Extraction Engine. Your task is to connect initialized entities and literal attributes into a valid graph based strictly on the allowed schema and explicit text evidence.
 
@@ -103,30 +106,40 @@ RELATION TRIPLES:
 """.strip()
 
 def get_geometric_counterfactual_prompt(change_from):
+    # Prompt για τη δημιουργία εναλλακτικής τιμής (counterfactual) με βάση αυστηρούς γεωμετρικούς/ορθογραφικούς περιορισμούς.
+    char_count = len(change_from)
+    words = change_from.split()
+    
+    initials_str = " ".join([f"'{w[0].upper()}...'" for w in words]) if words else ""
+    
     return f"""ROLE:
 You are a strict OSINT and Knowledge Graph Counterfactual Engine.
 
 TARGET ASSET TO REPLACE:
-'{change_from}'
+'{change_from}' (Length: {char_count} chars)
 
 TASK:
-1. Determine the abstract semantic category of '{change_from}' (e.g. Job/Occupation/Role, Location, Person Name, Organisation, or Visual Symbol).
-2. Propose EXACTLY ONE alternative real-world instance of the EXACT SAME category, maintaining realistic context.
+Propose EXACTLY ONE real-world, natural replacement of the EXACT SAME category (Person Name, Location, Job Title, or Organisation).
 
-RULES:
-- If '{change_from}' is a Job/Occupation/Role -> Propose a completely different specific Job/Occupation/Role.
-- If '{change_from}' is a Location -> Propose a completely different specific Location.
-- If '{change_from}' is a Name -> Propose a completely different specific Person Name.
-- If '{change_from}' is an Organisation/Symbol -> Propose a completely different equivalent entity.
+STRICT RULES:
+1. GENDER ALIGNMENT: If the target is a Person Name, the replacement MUST preserve the exact same gender (Female -> Female, Male -> Male).
+2. INITIALS MATCH: If the target consists of multiple words, each word in your proposed replacement MUST start with the exact same initial letter ({initials_str}).
+3. LENGTH MATCH: Target length is ~{char_count} characters. Keep the replacement length as close to {char_count} characters as possible (tolerance +/- 2 chars).
+4. REAL-WORLD ENTITY: Output MUST be a real, meaningful entity (never random characters).
 
-STRICT CONSTRAINTS:
-- DO NOT output schema ontology class names (e.g., 'Organisation', 'Location', 'Person', 'String', 'Role', 'Visual_Symbol').
-- DO NOT include quotes, explanations, prefixes, markdown, or commentary.
-- Output ONLY the replacement value itself (1-3 words max).
+FEW-SHOT EXAMPLES:
+- Target: 'Mary Jane' (Female, M J) -> Output: Markella Jane (Female)
+- Target: 'John Smith' (Male, J S) -> Output: Jack Slater (Male)
+- Target: 'Data Analyst' (Role, D A) -> Output: Data Architect (Role)
+- Target: 'London' (Location, L) -> Output: Lisbon (Location)
+
+FORMAT:
+Output ONLY the raw string value. No quotes, no explanations, no markdown.
 """.strip()
 
 
 def get_counterfactual_prompt(original_graph, detected_change):
+    # Prompt για την ενημέρωση του Knowledge Graph μετά από μια οπτική αλλαγή (counterfactual edit).
     return f"""ROLE:
 You are a strict Graph Editing Engine for OSINT Knowledge Graphs. Your goal is to update the original knowledge graph based on a single visual counterfactual edit.
 

@@ -1,0 +1,55 @@
+[
+    {
+        "counterfactual_image": "viber_2_cf.png",
+        "detected_change": "The original asset 'Richard Coleman' was replaced by 'Robert Carlyle'.",
+        "entities": [
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "rdf:type",
+                "object": "Profile_Page"
+            },
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "platform",
+                "object": "http://dbpedia.org/resource/Viber"
+            },
+            {
+                "subject": "Person_1",
+                "predicate": "rdf:type",
+                "object": "http://dbpedia.org/ontology/Person"
+            },
+            {
+                "subject": "Person_1",
+                "predicate": "rdfs:label",
+                "object": "Robert Carlyle"
+            },
+            {
+                "subject": "Location_1",
+                "predicate": "rdf:type",
+                "object": "http://dbpedia.org/ontology/Location"
+            },
+            {
+                "subject": "Location_1",
+                "predicate": "owl:sameAs",
+                "object": "http://dbpedia.org/resource/United_Kingdom"
+            }
+        ],
+        "relations": [
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "depicts_person",
+                "object": "Person_1"
+            },
+            {
+                "subject": "Person_1",
+                "predicate": "has_phone_number",
+                "object": "+44 7511 998 204"
+            },
+            {
+                "subject": "Location_1",
+                "predicate": "has_phone_code",
+                "object": "+44"
+            }
+        ]
+    }
+]

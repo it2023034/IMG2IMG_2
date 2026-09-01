@@ -1,0 +1,45 @@
+[
+    {
+        "counterfactual_image": "dashboard_cf.png",
+        "detected_change": "The original asset 'Mary Pappa' was replaced by 'Margaret Page'.",
+        "entities": [
+            {
+                "subject": "Investment_Account_Page_1",
+                "predicate": "rdf:type",
+                "object": "Investment_Account_Page"
+            },
+            {
+                "subject": "Person_1",
+                "predicate": "rdf:type",
+                "object": "http://dbpedia.org/ontology/Person"
+            },
+            {
+                "subject": "Person_1",
+                "predicate": "rdfs:label",
+                "object": "Margaret Page"
+            }
+        ],
+        "relations": [
+            {
+                "subject": "Investment_Account_Page_1",
+                "predicate": "has_url",
+                "object": "https://capitalfxpro-market.net"
+            },
+            {
+                "subject": "Investment_Account_Page_1",
+                "predicate": "has_total_balance",
+                "object": "€12,564.32"
+            },
+            {
+                "subject": "Investment_Account_Page_1",
+                "predicate": "has_total_profit",
+                "object": "€384.15"
+            },
+            {
+                "subject": "Investment_Account_Page_1",
+                "predicate": "depicts_person",
+                "object": "Person_1"
+            }
+        ]
+    }
+]

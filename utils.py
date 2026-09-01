@@ -3,31 +3,28 @@ import os
 import re
 
 def clean_term(text):
+    # Καθαρισμός όρων από αριθμούς στην αρχή, παρενθέσεις και ειδικούς χαρακτήρες.
     text = re.sub(r'^\d+[\.\)]\s*', '', text)
     text = re.sub(r'\(.*?\)', '', text)
     return text.strip(" -.*\"'")
 
 def clean_literal_value(predicate, value):
-    """
-    Καθαρίζει τα literals (όπως balances, profits, losses) 
-    από υπολειπόμενες παρενθέσεις ή extra κείμενο (π.χ. 'All Time)').
-    """
+    # Καθαρισμός τιμών literals (π.χ. υπόλοιπα, κέρδη) από περιττό κείμενο ή παρενθέσεις.
     if not isinstance(value, str):
         return value
     
     p_lower = predicate.lower()
     
-    # 1. Καθαρισμός χρηματικών ποσών (balance, profit, loss)
     if any(k in p_lower for k in ["balance", "profit", "loss"]):
         match = re.search(r'([$€£¥]?\s*[\d,]+(?:\.\d+)?)', value)
         if match:
             return match.group(1).strip()
             
-    # 2. Γενικός καθαρισμός για ορφανές παρενθέσεις στο τέλος
     value = re.sub(r'\s*\b[A-Za-z\s]*\)$', '', value).strip()
     return value
 
 def parse_triples(raw_output):
+    # Αναλύει τις γραμμές του raw output του LLM και εξάγει triples στη μορφή (subject, predicate, object).
     extracted_data = []
     lines = raw_output.strip().split('\n')
     for line in lines:
@@ -42,15 +39,18 @@ def parse_triples(raw_output):
     return extracted_data
 
 def save_description_txt(description, img_name, results_dir):
+    # Αποθηκεύει τη λεκτική περιγραφή της εικόνας σε αρχείο .txt.
     name = os.path.splitext(img_name)[0]
     with open(os.path.join(results_dir, f"{name}_desc.txt"), 'w', encoding='utf-8') as f:
         f.write(description)
 
 def save_json(data, filename, results_dir):
+    # Αποθηκεύει τα δεδομένα του Knowledge Graph σε μορφή JSON.
     with open(os.path.join(results_dir, filename), 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 def clean_and_deduplicate(triples):
+    # Αφαιρεί διπλότυπα triples και φιλτράρει λέξεις-κλειδιά που προέρχονται από το prompt.
     unique_triples = []
     seen = set()
     prompt_keywords = ['format', 'constraint', 'predicate', 'example', 'triples', 'allowed']
@@ -68,6 +68,7 @@ def clean_and_deduplicate(triples):
     return unique_triples
 
 def filter_ner_by_allowed_classes(ner_list, allowed_classes):
+    # Φιλτράρει τις οντότητες NER βάσει των επιτρεπόμενων κλάσεων της οντολογίας.
     allowed_classes_lower = {str(c).strip().lower().replace('"', '').replace("'", '') for c in allowed_classes}
     
     allowed_ids = set()
@@ -81,6 +82,7 @@ def filter_ner_by_allowed_classes(ner_list, allowed_classes):
     return [ent for ent in ner_list if ent.get("subject") in allowed_ids]
 
 def deduplicate_entities_by_label(ner_list):
+    # Αφαιρεί διπλότυπες οντότητες και επαναριθμεί τα IDs (π.χ. Person_1, Person_2).
     seen = set()
     unique_entities = []
     
@@ -115,6 +117,7 @@ def deduplicate_entities_by_label(ner_list):
     return reindexed_entities, id_map
 
 def apply_dynamic_ner_filtering(img_name, ner_list):
+    # Εφαρμόζει δυναμικό φιλτράρισμα οντοτήτων ανάλογα με τον τύπο της εικόνας (Viber, Profile, Dashboard).
     img_name_lower = img_name.lower()
 
     if "viber" in img_name_lower:
@@ -132,6 +135,7 @@ def apply_dynamic_ner_filtering(img_name, ner_list):
     return ner_list
 
 def extract_allowed_classes_from_schema(schema_content):
+    # Εξάγει τις επιτρεπόμενες κλάσεις από το κείμενο του schema (metapaths).
     allowed_classes = set()
     lines = schema_content.strip().split('\n')
     
@@ -145,6 +149,7 @@ def extract_allowed_classes_from_schema(schema_content):
     return allowed_classes
 
 def filter_relations_by_schema(raw_relations, extracted_entities, schema_content, id_map=None):
+    # Ελέγχει και φιλτράρει τις σχέσεις ώστε να συμμορφώνονται αυστηρά με τους κανόνες του schema.
     if id_map is None:
         id_map = {}
 
@@ -227,6 +232,7 @@ def filter_relations_by_schema(raw_relations, extracted_entities, schema_content
     return cleaned_relations
 
 def clean_graph_entities(ner_list, valid_relations, schema_content):
+    # Καθαρίζει τις οντότητες διαγράφοντας όσες παραμένουν ασύνδετες στο τελικό γράφημα.
     allowed_classes = extract_allowed_classes_from_schema(schema_content)
     valid_schema_ids = set()
 
@@ -252,6 +258,7 @@ def clean_graph_entities(ner_list, valid_relations, schema_content):
     return final_entities, valid_relations
 
 def process_pipeline_relations(raw_relations_str, ner_list, schema_content, id_map, img_name=""):
+    # Εκτελεί τη συνολική ροή επεξεργασίας και καθαρισμού των σχέσεων του pipeline.
     relations_list = parse_triples(raw_relations_str)
     cleaned_relations = clean_and_deduplicate(relations_list)
     
@@ -271,6 +278,7 @@ def process_pipeline_relations(raw_relations_str, ner_list, schema_content, id_m
     return final_entities, valid_relations
 
 def apply_rdf_ontology_mapping(entities):
+    # Αντιστοιχίζει τις βασικές κλάσεις οντοτήτων στα επίσημα URIs της DBpedia.
     class_mapping = {
         "location": "http://dbpedia.org/ontology/Location",
         "person": "http://dbpedia.org/ontology/Person",
@@ -292,12 +300,12 @@ def apply_rdf_ontology_mapping(entities):
     return mapped_entities
 
 def post_process_graph(graph_entry):
+    # Εφαρμόζει κανόνες μετα-επεξεργασίας (π.χ. Viber φιλτράρισμα, διόρθωση labels/literals) στο Knowledge Graph.
     description = graph_entry.get("description", "").lower()
     img_name = graph_entry.get("image", "").lower()
     relations = graph_entry.get("relations", [])
     entities = graph_entry.get("entities", [])
 
-    # 1. Φιλτράρισμα ειδικών Viber κανόνων
     if "viber" in description or "viber" in img_name:
         relations = [
             rel for rel in relations 
@@ -305,17 +313,14 @@ def post_process_graph(graph_entry):
                     and str(rel.get("predicate", "")).lower() in ["located_in", "originates_from"])
         ]
 
-    # 2. Καθαρισμός κενών/placeholder literals & Εφαρμογή Clean Literals
     clean_rels = []
     for rel in relations:
         obj_val = str(rel.get("object", "")).strip()
         if obj_val.lower() not in ["string", "none", "null", "xsd:string"]:
             pred = rel.get("predicate", "")
-            # Καθαρίζουμε το string του object (π.χ. αφαίρεση 'All Time)')
             rel["object"] = clean_literal_value(pred, obj_val)
             clean_rels.append(rel)
 
-    # 3. Εντοπισμός τύπου (class) για κάθε subject
     subject_types = {}
     for ent in entities:
         s = ent.get("subject")
@@ -324,7 +329,6 @@ def post_process_graph(graph_entry):
         if p in ["rdf:type", "type"]:
             subject_types[s] = o
 
-    # 4. Fail-safe: Αυτόματη διασφάλιση της σχέσης depicts_person
     profile_acc_ids = [subj for subj, stype in subject_types.items() if any(k in stype for k in ["profile_page", "investment_account_page"])]
     person_ids = [subj for subj, stype in subject_types.items() if "person" in stype]
     
@@ -337,7 +341,6 @@ def post_process_graph(graph_entry):
                 "object": person_ids[0]
             })
 
-    # 5. Ενιαίος μετασχηματισμός Entities
     processed_entities = []
     for ent in entities:
         subj = ent.get("subject")
@@ -347,11 +350,9 @@ def post_process_graph(graph_entry):
         stype = subject_types.get(subj, "").lower()
         is_label_pred = pred.lower() in ["label", "rdfs:label"]
 
-        # Κανόνας A: Αφαίρεση label από Investment_Account_Page
         if "investment_account_page" in stype and is_label_pred:
             continue
 
-        # Κανόνας B: Μετατροπή label σε platform για Profile_Page
         if "profile_page" in stype and is_label_pred:
             processed_entities.append({
                 "subject": subj,
@@ -360,7 +361,6 @@ def post_process_graph(graph_entry):
             })
             continue
 
-        # 🌟 Κανόνας C (NEW): Μετατροπἠ label σε owl:sameAs για Location με DBpedia URI
         if "location" in stype and is_label_pred and obj.startswith("http://dbpedia.org/"):
             processed_entities.append({
                 "subject": subj,
@@ -369,7 +369,6 @@ def post_process_graph(graph_entry):
             })
             continue
 
-        # Κανόνας D: Αλλαγή του 'label' σε 'rdfs:label' για όλα τα υπόλοιπα
         if pred.lower() == "label":
             pred = "rdfs:label"
 
