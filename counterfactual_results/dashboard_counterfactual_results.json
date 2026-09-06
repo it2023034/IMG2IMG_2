@@ -1,7 +1,7 @@
 [
     {
         "counterfactual_image": "dashboard_cf.png",
-        "detected_change": "The original asset 'Mary Pappa' was replaced by 'Margaret Page'.",
+        "detected_change": "The original asset 'Mary Pappa' was replaced by 'Mara Parker'.",
         "entities": [
             {
                 "subject": "Investment_Account_Page_1",
@@ -16,7 +16,7 @@
             {
                 "subject": "Person_1",
                 "predicate": "rdfs:label",
-                "object": "Margaret Page"
+                "object": "Mara Parker"
             }
         ],
         "relations": [

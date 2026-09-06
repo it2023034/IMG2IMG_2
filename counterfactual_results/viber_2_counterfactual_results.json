@@ -1,7 +1,7 @@
 [
     {
         "counterfactual_image": "viber_2_cf.png",
-        "detected_change": "The original asset 'Richard Coleman' was replaced by 'Robert Carlyle'.",
+        "detected_change": "The original asset 'Richard Coleman' was replaced by 'Raymond Carter'.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -21,7 +21,7 @@
             {
                 "subject": "Person_1",
                 "predicate": "rdfs:label",
-                "object": "Robert Carlyle"
+                "object": "Raymond Carter"
             },
             {
                 "subject": "Location_1",

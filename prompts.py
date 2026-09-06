@@ -106,35 +106,41 @@ RELATION TRIPLES:
 """.strip()
 
 def get_geometric_counterfactual_prompt(change_from):
-    # Prompt για τη δημιουργία εναλλακτικής τιμής (counterfactual) με βάση αυστηρούς γεωμετρικούς/ορθογραφικούς περιορισμούς.
     char_count = len(change_from)
-    words = change_from.split()
+    words = [w for w in change_from.split() if w]
+    word_count = len(words)
     
-    initials_str = " ".join([f"'{w[0].upper()}...'" for w in words]) if words else ""
+    initials = [w[0].upper() for w in words]
+    initials_str = ", ".join([f"Word {i+1} MUST start with '{initials[i]}'" for i in range(len(initials))])
     
     return f"""ROLE:
-You are a strict OSINT and Knowledge Graph Counterfactual Engine.
+You are an expert OSINT and Knowledge Graph Counterfactual Generation Engine.
 
-TARGET ASSET TO REPLACE:
-'{change_from}' (Length: {char_count} chars)
+TARGET STRING TO MODIFY:
+'{change_from}' (Length: {char_count} chars | Word Count: {word_count})
 
-TASK:
-Propose EXACTLY ONE real-world, natural replacement of the EXACT SAME category (Person Name, Location, Job Title, or Organisation).
+ANALYSIS & TASK:
+1. Identify the semantic category of '{change_from}' (Person Name, Location, Role, Organisation, etc.).
+2. If it is a Person Name, infer the grammatical gender (Female or Male).
+3. Generate EXACTLY ONE real-world replacement string that matches the detected category, gender, and structural constraints.
 
-STRICT RULES:
-1. GENDER ALIGNMENT: If the target is a Person Name, the replacement MUST preserve the exact same gender (Female -> Female, Male -> Male).
-2. INITIALS MATCH: If the target consists of multiple words, each word in your proposed replacement MUST start with the exact same initial letter ({initials_str}).
-3. LENGTH MATCH: Target length is ~{char_count} characters. Keep the replacement length as close to {char_count} characters as possible (tolerance +/- 2 chars).
-4. REAL-WORLD ENTITY: Output MUST be a real, meaningful entity (never random characters).
+STRICT CONSTRAINT RULES:
+1. SEMANTIC & GENDER PRESERVATION (CRITICAL):
+   - Female Person Name -> MUST generate a valid Female Person Name (NEVER male!).
+   - Male Person Name -> MUST generate a valid Male Person Name (NEVER female!).
+   - Location -> MUST generate a real-world Location/Country (NEVER a person name!).
+   - Role/Organisation -> MUST generate a valid matching entity.
 
-FEW-SHOT EXAMPLES:
-- Target: 'Mary Jane' (Female, M J) -> Output: Markella Jane (Female)
-- Target: 'John Smith' (Male, J S) -> Output: Jack Slater (Male)
-- Target: 'Data Analyst' (Role, D A) -> Output: Data Architect (Role)
-- Target: 'London' (Location, L) -> Output: Lisbon (Location)
+2. STRUCTURE & INITIALS MATCH (MANDATORY):
+   - Exact word count required: {word_count} word(s).
+   - {initials_str}.
 
-FORMAT:
-Output ONLY the raw string value. No quotes, no explanations, no markdown.
+3. CHARACTER LENGTH MATCH:
+   - Target length is around {char_count} characters.
+   - Total string length MUST be strictly between {max(1, char_count - 2)} and {char_count + 3} characters.
+
+OUTPUT FORMAT:
+Output ONLY the raw replacement string. Do not include quotes, markdown formatting, prefixes, or explanations.
 """.strip()
 
 

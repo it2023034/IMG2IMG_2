@@ -138,7 +138,7 @@ def run_image_generation():
 
     Return ONLY a JSON object with keys "change_from", "target_entity", and "target_predicate":
     {{
-        "change_from": "<exact string to modify, e.g. Michael Anderson>",
+        "change_from": "<exact string to modify, e.g. Nicolas Sanders>",
         "target_entity": "<subject ID, e.g. Person_1>",
         "target_predicate": "<predicate, e.g. label or rdfs:label>"
     }}
@@ -171,16 +171,68 @@ def run_image_generation():
         print("Could not find a valid target for modification.")
         return
 
-    # Step B: Δημιουργία νέας τιμής με αυστηρούς γεωμετρικούς/χωρικούς κανόνες
+    # --- ΔΥΝΑΜΙΚΗ ΑΠΟΜΟΝΩΣΗ ΑΚΡΙΒΟΥΣ ΟΝΤΟΤΗΤΑΣ ---
+    matched_entity = None
+    for ent in entities:
+        ent_obj = str(ent.get("object", "")).strip()
+        if ent_obj and ent_obj.lower() in clean_change_from.lower():
+            if not ent_obj.startswith("http"):
+                matched_entity = ent_obj
+                break
+            else:
+                matched_entity = ent_obj.split("/")[-1].replace("_", " ")
+                break
+
+    if matched_entity:
+        print(f"[ENTITY ISOLATED] Cleaned target string from '{clean_change_from}' -> '{matched_entity}'")
+        clean_change_from = matched_entity
+
+    clean_change_from = re.sub(r'^(currently in|from|works at|lives in)\s+', '', clean_change_from, flags=re.IGNORECASE).strip()
+
+    # Step B: Δημιουργία νέας τιμής με αυστηρούς γεωμετρικούς/χωρικούς κανόνες & Retry Validation
     print(f"[INFO] Generating counterfactual using Strict Geometric Rules for: '{clean_change_from}'...")
     
-    strict_prompt = prompts.get_geometric_counterfactual_prompt(clean_change_from)
-    change_to_label = model.generate_description([], strict_prompt).strip(" \"'\n`")
+    target_len = len(clean_change_from)
+    # Αυστηρή ανοχή ±1 χαρακτήρα για να μην ξεφεύγει το μήκος των λέξεων
+    allowed_tolerance = 1
+    min_len = max(1, target_len - allowed_tolerance)
+    max_len = target_len + allowed_tolerance
+
+    expected_words = [w for w in clean_change_from.split() if w]
+    expected_initials = [w[0].upper() for w in expected_words]
+
+    change_to_label = ""
+    candidate = ""
+
+    for attempt in range(5):
+        strict_prompt = prompts.get_geometric_counterfactual_prompt(clean_change_from)
+        
+        if attempt > 0:
+            strict_prompt += f"\n\nCRITICAL RETRY #{attempt+1}: Your previous output '{candidate}' was rejected because it didn't match strict length/gender/initial constraints. Ensure: 1) Same category & gender as '{clean_change_from}'. 2) Initials MUST be {' '.join(expected_initials)}. 3) Total length MUST be strictly between {min_len} and {max_len} characters."
+
+        candidate = model.generate_description([], strict_prompt).strip(" \"'\n`")
+        candidate = re.sub(r'```.*?\n|\n```', '', candidate).strip()
+        
+        candidate_words = candidate.split()
+        candidate_initials = [w[0].upper() for w in candidate_words if w]
+        
+        has_correct_initials = (len(candidate_initials) == len(expected_initials) and 
+                                candidate_initials == expected_initials)
+        has_correct_length = (min_len <= len(candidate) <= max_len)
+        
+        if has_correct_initials and has_correct_length:
+            change_to_label = candidate
+            break
+            
+        print(f"[RETRY {attempt+1}] LLM generated '{candidate}' ({len(candidate)} chars, Initials: {candidate_initials}). Required: {min_len}-{max_len} chars, Initials: {expected_initials}.")
+
+    if not change_to_label:
+        change_to_label = candidate
 
     print(f"\n[TARGET SELECTED & CONSTRAINED]")
     print(f"Target Entity : {target_entity}")
-    print(f"Change From   : '{clean_change_from}'")
-    print(f"Change To     : '{change_to_label}'\n")
+    print(f"Change From   : '{clean_change_from}' ({target_len} chars)")
+    print(f"Change To     : '{change_to_label}' ({len(change_to_label)} chars)\n")
 
     # Προσωρινή αποθήκευση των δεδομένων αλλαγής για το επόμενο βήμα
     temp_edit = {

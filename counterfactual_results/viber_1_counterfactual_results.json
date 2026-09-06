@@ -1,7 +1,7 @@
 [
     {
         "counterfactual_image": "viber_1_cf.png",
-        "detected_change": "The original asset 'Michael Anderson' was replaced by 'Matthew Adams'.",
+        "detected_change": "The original asset 'Michael Anderson' was replaced by 'Matthew Armstrong'.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -21,7 +21,7 @@
             {
                 "subject": "Person_1",
                 "predicate": "rdfs:label",
-                "object": "Matthew Adams"
+                "object": "Matthew Armstrong"
             },
             {
                 "subject": "Location_1",
