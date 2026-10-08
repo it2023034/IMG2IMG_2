@@ -1,0 +1,23 @@
+Here's a semantic description of the image based on your guidelines:
+
+**1. PLATFORM & LAYOUT IDENTIFICATION:**
+
+*   **Interface Category:** Messaging application contact information view.
+*   **Platform Branding:** Viber (indicated by logo and UI elements). The layout is a full-screen contact details page within a messaging app.
+
+**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**
+
+*   **Contact Name:** Michael Anderson
+*   **Phone Number:** +44 7405 812 443 (displayed twice)
+*   **Dialing Code:** +44 (United Kingdom)
+*   **Section Title:** "Media, links and files"
+*   **Numeric Metric:** "45" (likely indicating the number of media items)
+*   **Text Labels:** "Free call", "Video call", "Search", "Mute notifications", "Custom notifications", "Media visibility", "Encryption", "Disappearing messages"
+*   **Status Label:** "On" (associated with Media Visibility)
+*   **Status Label:** "Off" (associated with Disappearing Messages)
+
+**3. EXCLUSION OF SECONDARY NOISE:**
+
+*   The image excludes the content of the media files displayed below the contact information.
+*   It omits any contextual messaging or post details.
+*   It avoids describing the visual style or aesthetic elements beyond identifying Viber's branding.

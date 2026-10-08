@@ -1,7 +1,7 @@
 [
     {
         "counterfactual_image": "fb_profile_cf.png",
-        "detected_change": "The original asset 'Syria' was replaced by 'Serbia'.",
+        "detected_change": "The original asset 'Syria' was replaced by 'Spain'.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -41,7 +41,7 @@
             {
                 "subject": "Location_2",
                 "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/Serbia"
+                "object": "http://dbpedia.org/resource/Spain"
             },
             {
                 "subject": "Location_3",

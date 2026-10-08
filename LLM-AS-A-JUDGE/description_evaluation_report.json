@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "evaluator": "Ollama",
+    "model": "qwen3-vl:8b",
+    "total_samples": 4,
+    "successful_evaluations": 4,
+    "failed_evaluations": 0,
+    "success_rate_percent": 100.0
+  },
+  "summary_averages": {
+    "semantic_accuracy": 4.0,
+    "completeness": 5.0,
+    "hallucination_control": 4.0,
+    "semantic_richness": 5.0,
+    "overall_score": 4.5
+  },
+  "sample_detailed_evaluations": {
+    "dashboard": {
+      "image_filename": "dashboard.png",
+      "description_filename": "dashboard_desc.txt",
+      "description_text": "Here's a semantic description of the image based on your guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Trading Dashboard\n*   **Platform Branding:** CapitalFxPro - \"Trade. Invest. Grow.\"\n*   **Domain URL:** https://capitalfxpro-market.net\n*   **Layout Areas:** The dashboard is divided into sections including: Total Balance, Today's Profit, Total Invested, Available Balance, Account Growth Chart, Recent Trading Activity, and Asset Allocation.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **User Profile:** \"MP\" - Standard Investor; User Name: \"Mary Pappa\"\n*   **Total Balance:** €12,564.32 (+€2,584.32 (25.67%) All Time)\n*   **Today's Profit:** €384.15 (+3.14% Yesterday)\n*   **Total Invested:** €10,000.00 (Initial Deposit)\n*   **Available Balance:** €2,564.32 (Withdrawable)\n*   **Current Value:** €12,564.32\n*   **Recent Trading Activity Examples:**\n    *   BUY EUR/USD: Amount - €2,000.00; Profit/Loss - €68.45; Status - Completed\n    *   BUY Gold (XAU/USD): Amount - €1,500.00; Profit/Loss - €54.20; Status - Completed\n    *   SELL Bitcoin (BTC/EUR): Amount - €1,000.00; Profit/Loss - €34.12; Status - Completed\n*   **Asset Allocation Percentages:**\n    *   Forex: 45.0%\n    *   Commodities: 25.0%\n    *   Cryptocurrency: 20.0%\n    *   Other Assets: 10.0%\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   Chart axis labels and specific data points within the Account Growth Chart are excluded.\n*   Details of minor UI elements (buttons, icons beyond those identifying sections) are omitted.\n\n\n\nThis description focuses on the core information presented in the screenshot, adhering to your specified filtering guidelines.",
+      "metrics": {
+        "semantic_accuracy": 3,
+        "completeness": 5,
+        "hallucination_control": 3,
+        "semantic_richness": 5,
+        "overall_score": 4.0,
+        "reasoning": "The description accurately captures most core elements (e.g., user profile, financial metrics, trading activity, asset allocation) but contains a factual error in the Total Balance's incremental amount: the image shows '+€2,564.32 (25.67%) All Time', while the description states '+€2,584.32 (25.67%)'. This is a minor factual discrepancy. All other details align with the visual source, and the exclusion of secondary UI elements (as per guidelines) is appropriate. The description remains concise and semantically rich without unnecessary verbosity."
+      },
+      "status": "success"
+    },
+    "fb_profile": {
+      "image_filename": "fb_profile.png",
+      "description_filename": "fb_profile_desc.txt",
+      "description_text": "Here's a precise, highly focused semantic description of the image/interface screenshot, adhering to your strict guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Social Media Profile View\n*   **Platform Branding:** Facebook\n*   **Layout Areas:** Header section (cover photo and profile picture), \"Intro\" panel (left-hand side), \"Posts\" panel (right-hand side).\n*   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Profile Name:** Michael Anderson\n*   **URL:** https://www.facebook.com/michael.anderson.us.marine\n*   **Title/Affiliation:** US Marine | Proud to serve my country 🇺🇸\n*   **Intro Information:**\n    *   United States Marine Corps\n    *   Currently in Syria\n    *   From Texas, USA\n    *   Widowed\n    *   Father of one son\n    *   Joined May 2014\n*   **Friends Count:** 142\n*   **Post Text (December 24, 2023):** \"Another day, another mission. Proud to serve. Miss the ones I love. God bless the USA 🇺🇸\"\n*   **Numeric Metrics (Post):** 187 Reactions, 26 Comments, 8 Shares\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   All post content beyond the extracted text snippet.\n*   Minor UI elements like \"Message\" button and filters icon.\n*   Details of individual friend profiles in the \"See all friends\" section.\n\n\n\nThis description focuses solely on identifying core entities, their relationships, and key attributes as presented within the screenshot, avoiding extraneous details.",
+      "metrics": {
+        "semantic_accuracy": 3,
+        "completeness": 5,
+        "hallucination_control": 3,
+        "semantic_richness": 5,
+        "overall_score": 4.0,
+        "reasoning": "The description accurately captures most elements (URL, profile name, title, intro details, friends count, post text, metrics) but incorrectly states the post date as December 24, 2023 instead of December 24, 2025. All other details are correctly represented, and the exclusion of secondary noise is appropriate. The date discrepancy is a factual error, reducing semantic accuracy and hallucination control, but the description remains comprehensive for the intended scope."
+      },
+      "status": "success"
+    },
+    "viber_1": {
+      "image_filename": "viber_1.png",
+      "description_filename": "viber_1_desc.txt",
+      "description_text": "Here's a semantic description of the image based on your guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Messaging application contact information view.\n*   **Platform Branding:** Viber (indicated by logo and UI elements). The layout is a full-screen contact details page within a messaging app.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Contact Name:** Michael Anderson\n*   **Phone Number:** +44 7405 812 443 (displayed twice)\n*   **Dialing Code:** +44 (United Kingdom)\n*   **Section Title:** \"Media, links and files\"\n*   **Numeric Metric:** \"45\" (likely indicating the number of media items)\n*   **Text Labels:** \"Free call\", \"Video call\", \"Search\", \"Mute notifications\", \"Custom notifications\", \"Media visibility\", \"Encryption\", \"Disappearing messages\"\n*   **Status Label:** \"On\" (associated with Media Visibility)\n*   **Status Label:** \"Off\" (associated with Disappearing Messages)\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   The image excludes the content of the media files displayed below the contact information.\n*   It omits any contextual messaging or post details.\n*   It avoids describing the visual style or aesthetic elements beyond identifying Viber's branding.",
+      "metrics": {
+        "semantic_accuracy": 5,
+        "completeness": 5,
+        "hallucination_control": 5,
+        "semantic_richness": 5,
+        "overall_score": 5.0,
+        "reasoning": "The description accurately identifies Viber via the encryption text ('Viber's end-to-end encryption') and UI elements (e.g., call buttons). All textual identifiers (contact name, phone number, section titles, status labels) are correctly noted. It appropriately excludes secondary details like media content, focusing on the UI structure. No factual errors or unsupported claims; all inferences (e.g., Viber branding) are contextually justified by visible evidence."
+      },
+      "status": "success"
+    },
+    "viber_2": {
+      "image_filename": "viber_2.png",
+      "description_filename": "viber_2_desc.txt",
+      "description_text": "Here's a semantic description of the image based on your guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Messaging application view (contact details/profile screen).\n*   **Platform Branding:** Viber (indicated by \"Viber’s end-to-end encryption\" text).\n*   **Layout Areas:** The interface is divided into a header area containing the contact's profile picture and name, followed by a list of settings options.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Contact Name:** Richard Coleman\n*   **Phone Number:** +44 7511 998 204 (Mobile)\n*   **International Dialing Prefix:** +44 (United Kingdom)\n*   **Encryption Information:** \"Messages in this chat are protected by Viber’s end-to-end encryption.\"\n*   **Settings Labels:** \"Mute notifications\", \"Custom notifications\", \"Media visibility\"\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   The image excludes any content of messages, specific notification settings values (beyond the labels), and detailed explanations beyond what's directly stated in the text.",
+      "metrics": {
+        "semantic_accuracy": 5,
+        "completeness": 5,
+        "hallucination_control": 5,
+        "semantic_richness": 5,
+        "overall_score": 5.0,
+        "reasoning": "The description accurately identifies the Viber interface, correct contact details (Richard Coleman, +44 7511 998 204), layout structure (header with profile picture/name, settings options), and key elements like encryption text. It correctly infers the UK country code from +44 as a deterministic interpretation. It appropriately omits secondary details like message content, aligning with the scope. No factual errors or unsupported claims exist."
+      },
+      "status": "success"
+    }
+  }
+}

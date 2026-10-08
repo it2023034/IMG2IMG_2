@@ -1,0 +1,226 @@
+{
+  "fb_profile": {
+    "entities": [
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "rdf:type",
+        "object": "Profile_Page"
+      },
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "platform",
+        "object": "http://dbpedia.org/resource/Facebook"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "rdf:type",
+        "object": "http://dbpedia.org/ontology/Person"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "rdfs:label",
+        "object": "Michael Anderson"
+      },
+      {
+        "subject": "Location_1",
+        "predicate": "rdf:type",
+        "object": "http://dbpedia.org/ontology/Location"
+      },
+      {
+        "subject": "Location_1",
+        "predicate": "rdfs:label",
+        "object": "United States of America"
+      },
+      {
+        "subject": "Organisation_1",
+        "predicate": "rdf:type",
+        "object": "http://dbpedia.org/ontology/Organisation"
+      },
+      {
+        "subject": "Organisation_1",
+        "predicate": "rdfs:label",
+        "object": "United States Army"
+      },
+      {
+        "subject": "Visual_Symbol_1",
+        "predicate": "rdf:type",
+        "object": "Visual_Symbol"
+      },
+      {
+        "subject": "Visual_Symbol_1",
+        "predicate": "rdfs:label",
+        "object": "American flag emblem"
+      }
+    ],
+    "relations": [
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "depicts_person",
+        "object": "Person_1"
+      },
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "displays_symbol",
+        "object": "Visual_Symbol_1"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "has_role",
+        "object": "Role_1"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "affiliated_with",
+        "object": "Organisation_1"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "located_in",
+        "object": "Location_1"
+      },
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "has_url",
+        "object": "http://dbpedia.org/resource/Facebook"
+      }
+    ]
+  },
+  "dashboard": {
+    "entities": [
+      {
+        "subject": "Investment_Account_Page_1",
+        "predicate": "rdf:type",
+        "object": "Investment_Account_Page"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "rdf:type",
+        "object": "http://dbpedia.org/ontology/Person"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "rdfs:label",
+        "object": "exact text string or DBpedia URI"
+      },
+      {
+        "subject": "Organisation_1",
+        "predicate": "rdf:type",
+        "object": "http://dbpedia.org/ontology/Organisation"
+      },
+      {
+        "subject": "Organisation_1",
+        "predicate": "rdfs:label",
+        "object": "exact text string or DBpedia URI"
+      }
+    ],
+    "relations": [
+      {
+        "subject": "Person_1",
+        "predicate": "has_role",
+        "object": "Role_1"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "affiliated_with",
+        "object": "Organisation_1"
+      },
+      {
+        "subject": "Investment_Account_Page_1",
+        "predicate": "depicts_person",
+        "object": "Person_1"
+      }
+    ]
+  },
+  "viber_1": {
+    "entities": [
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "rdf:type",
+        "object": "Profile_Page"
+      },
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "platform",
+        "object": "http://dbpedia.org/resource/<Resolved_Name>"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "rdf:type",
+        "object": "http://dbpedia.org/ontology/Person"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "rdfs:label",
+        "object": "Michael Anderson"
+      },
+      {
+        "subject": "Location_1",
+        "predicate": "rdf:type",
+        "object": "http://dbpedia.org/ontology/Location"
+      },
+      {
+        "subject": "Location_1",
+        "predicate": "rdfs:label",
+        "object": "Instagram"
+      }
+    ],
+    "relations": [
+      {
+        "subject": "Person_1",
+        "predicate": "has_role",
+        "object": "Role_1"
+      },
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "depicts_person",
+        "object": "Person_1"
+      }
+    ]
+  },
+  "viber_2": {
+    "entities": [
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "rdf:type",
+        "object": "Profile_Page"
+      },
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "platform",
+        "object": "http://dbpedia.org/resource/<Resolved_Name>"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "rdf:type",
+        "object": "http://dbpedia.org/ontology/Person"
+      },
+      {
+        "subject": "Person_1",
+        "predicate": "rdfs:label",
+        "object": "Richard Coleman"
+      },
+      {
+        "subject": "Location_1",
+        "predicate": "rdf:type",
+        "object": "http://dbpedia.org/ontology/Location"
+      },
+      {
+        "subject": "Location_1",
+        "predicate": "rdfs:label",
+        "object": "exact text string or DBpedia URI"
+      }
+    ],
+    "relations": [
+      {
+        "subject": "Person_1",
+        "predicate": "has_role",
+        "object": "Role_1"
+      },
+      {
+        "subject": "Profile_Page_1",
+        "predicate": "depicts_person",
+        "object": "Person_1"
+      }
+    ]
+  }
+}

@@ -11,4 +11,6 @@ env/
 
 # IDE / Editor config
 .vscode/
-.idea/
+benchmark_mscoco/
+benchmark_sharegpt4v/
+benchmark_textcaps/
