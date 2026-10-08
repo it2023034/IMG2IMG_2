@@ -1,5 +1,8 @@
 def get_description_prompt():
-    # Prompt για τη δημιουργία ακριβούς και εστιασμένης σημασιολογικής περιγραφής εικόνας ή διεπαφής.
+    """Generates a prompt for creating a precise, highly focused semantic description
+
+    of an image or user interface screenshot.
+    """
     return """Analyse the provided image / interface screenshot and generate a precise, highly focused semantic description.
 
 Follow these strict filtering guidelines:
@@ -18,37 +21,41 @@ Follow these strict filtering guidelines:
 
 Generate a clean, structured semantic description focused strictly on core entities and primary traits."""
 
+
 def get_ner_prompt(description):
-    # Prompt για την αναγνώριση και αρχικοποίηση οντοτήτων (NER) με βάση καθορισμένη οντολογία.
+    """Generates a prompt for Named Entity Recognition (NER) initialization based on a target ontology."""
     return f"""ROLE:
 You are an expert Visual & Interface Named Entity Recognition (NER) system. Your task is to identify and initialize discrete entities from the input text using ONLY the allowed target ontology.
 
 ALLOWED ONTOLOGY CLASSES (WHITELIST):
 - Profile_Page, Investment_Account_Page
-- Person, Location, Organisation, Visual_Symbol
+- Person, Organisation, Visual_Symbol
 
 EXTRACTION RULES:
-1. ONTOLOGY BOUNDING & ENTITY IDS:
-   - Assign entity classes strictly using ONLY the provided whitelist.
-   - Every initialized entity MUST have a unique numeric ID suffix per class starting from 1 (e.g., Profile_Page_1, Person_1, Location_1, Visual_Symbol_1).
+1. ONTOLOGY BOUNDING & STRICT SEQUENTIAL IDS:
+- Assign entity classes strictly using ONLY the provided whitelist.
+- Every initialized entity MUST have a unique numeric ID suffix per class, strictly starting sequentially from 1 (e.g., Profile_Page_1, Investment_Account_Page_1, Person_1, Organisation_1, Visual_Symbol_1).
 
-2. TARGETED DBPEDIA ENTITY LINKING (PROFILE_PAGE & LOCATION ONLY):
-   - ONLY for `Profile_Page` and `Location`: You MUST format the label strictly as a canonical DBpedia resource URI (e.g., "http://dbpedia.org/resource/<Resolved_Name>").
-   - FOR ALL OTHER CLASSES (`Investment_Account_Page`, `Person`, `Organisation`, `Visual_Symbol`): Format the label strictly as the raw text string extracted from the description.
+2. CATEGORY-BASED MANDATORY ENTITY INITIALIZATION:
+- MESSAGING & CONTACT INTERFACES: For any messaging app, contact info screen, or communication profile, YOU MUST MANDATORILY INITIALIZE BOTH `Profile_Page_1` AND `Person_1`.
+- SOCIAL MEDIA PROFILES: For social networking profiles, initialize `Profile_Page_1` AND `Person_1`.
+- FINANCIAL & TRADING DASHBOARDS: For financial, broker, or trading dashboards, initialize `Investment_Account_Page_1` AND `Person_1`.
+- ORGANISATIONS & BRANDS: If an enterprise, broker, official institution, or military entity is present, initialize `Organisation_1`.
+- VISUAL EMBLEMS: If official logos or emblems are identified, initialize `Visual_Symbol` entities starting at ID 1.
 
-3. SEMANTIC ENTITY BOUNDING:
-   - Location entities MUST represent distinct geopolitical entities, sovereign states, or countries. Numeric dialing prefixes are NOT locations.
-   - Profile/Account entities MUST represent the target software platform instance.
+3. TARGETED DBPEDIA ENTITY LINKING (PROFILE_PAGE ONLY):
+- ONLY for `Profile_Page`: Format the label strictly as the canonical DBpedia resource URI of the underlying application platform (e.g., "http://dbpedia.org/resource/<Platform_Name>").
+- FOR ALL OTHER CLASSES (`Investment_Account_Page`, `Person`, `Organisation`, `Visual_Symbol`): Format the label strictly as the raw text string extracted from the description.
 
-4. SEPARATION OF GRAPH NODES VS. LITERAL ATTRIBUTES:
-   - Do NOT instantiate Entity IDs for literal attributes (such as roles, URLs, phone numbers, dialing codes, balances, or profits). Literals are processed strictly during relation extraction as raw text strings.
+4. SEPARATION OF GRAPH NODES VS. LITERALS & URIS:
+- Do NOT instantiate Entity IDs for locations, roles, URLs, phone numbers, balances, or profits. Geographic locations are mapped directly as DBpedia URIs during relation extraction.
 
 5. MANDATORY INITIALIZATION:
-   - Output both `rdf:type` and `rdfs:label` for EVERY initialized entity.
+- Output both `rdf:type` and `rdfs:label` for EVERY initialized entity.
 
 OUTPUT TEMPLATE:
-Class_Name_1 | rdf:type | Class_Name
-Class_Name_1 | rdfs:label | "exact text string or DBpedia URI"
+<Class_Name>_<ID> | rdf:type | <Class_Name>
+<Class_Name>_<ID> | rdfs:label | "<exact_text_string_or_DBpedia_URI>"
 
 INPUT TEXT:
 "{description}"
@@ -57,8 +64,10 @@ NER TRIPLES:
 """.strip()
 
 
-def get_relation_extraction_prompt(description, schema, examples, extracted_entities):
-    # Prompt για την εξαγωγή και σύνδεση σχέσεων μεταξύ των αναγνωρισμένων οντοτήτων στο Knowledge Graph.
+def get_relation_extraction_prompt(
+    description, schema, examples, extracted_entities
+):
+    """Generates a prompt for Knowledge Graph relation extraction and connectivity rules."""
     return f"""ROLE:
 You are an expert, deterministic Knowledge Graph Relation Extraction Engine. Your task is to connect initialized entities and literal attributes into a valid graph based strictly on the allowed schema and explicit text evidence.
 
@@ -74,30 +83,34 @@ FEW-SHOT SYNTAX EXAMPLES:
 GRAPH GRAMMAR & CONNECTION RULES:
 
 1. STRICT METAPATH DOMAIN & RANGE COMPLIANCE:
-   - Construct relation triples ONLY by strictly matching valid Subject-Predicate-Object patterns declared in ALLOWED ONTOLOGY METAPATHS.
-   - Never assign a predicate to an unapproved Subject class.
+- Construct relation triples ONLY by strictly matching valid Subject-Predicate-Object patterns declared in ALLOWED ONTOLOGY METAPATHS.
+- Never assign a predicate to an unapproved Subject class.
 
-2. FACTUAL PHONE CODE RULE (NO LITERAL PLACEHOLDERS OR INFERENCES):
-   - ONLY issue a `has_phone_code` relation if an EXPLICIT numeric dialing prefix (e.g., sequence starting with '+' or digits) is explicitly stated in the text description.
-   - NEVER output data-type placeholders (e.g., "String") or infer dialing codes from Location entity labels or geographic names. If no numeric dialing prefix exists in the text, SKIP the `has_phone_code` relation entirely.
+2. DIRECT DBPEDIA LOCATION & COUNTRY MAPPING RULE:
+- Connect Person entities directly to DBpedia Location URIs using `originates_from` or `located_in` (e.g., Person_<ID> | originates_from | http://dbpedia.org/resource/<Country_Name>).
+- Connect Profile_Page entities directly to DBpedia Location URIs using `associated_with_country` (e.g., Profile_Page_<ID> | associated_with_country | http://dbpedia.org/resource/<Country_Name>).
+- MANDATORY PHONE COUNTRY DERIVATION: Whenever a phone number containing an international dialing prefix or country indicator is present, YOU MUST ALWAYS establish the `associated_with_country` relation connecting `Profile_Page_1` directly to the DBpedia Country URI.
+- NEVER create intermediate Location entity IDs. Map the target location strictly as a DBpedia URI in the Object position.
 
-3. STRICT PHONE NUMBER LITERAL RULE:
-   - The predicate `has_phone_number` MUST ONLY accept objects that are explicit numeric telephone strings (containing digits, spaces, or leading '+').
-   - NEVER map proper names, entity labels, or non-numeric strings to `has_phone_number`. If no numeric telephone string is explicitly present in the description, SKIP the `has_phone_number` relation entirely.
+3. EXHAUSTIVE LITERAL & ATTRIBUTE ATTACHMENT:
+- Extract and attach ALL explicit literal attributes present in the description to their valid subjects:
+  * Phone numbers via `has_phone_number`
+  * Financial metrics (balances, profits) via `has_total_balance` and `has_profit`
+  * URLs via `has_url`
+  * Job titles, ranks, or investor status via `has_role`
+  * Visual marks/emblems via `displays_symbol`
 
-4. MANDATORY EXHAUSTIVE CONNECTIVITY (NO ISOLATED OR OMITTED NODES):
-   - YOU MUST CONNECT EVERY SINGLE ENTITY listed under AVAILABLE INITIALIZED ENTITIES.
-   - It is strictly forbidden to leave any initialized Entity ID (e.g., Person, Organisation, Location, Profile_Page, Investment_Account_Page) disconnected or omitted from the graph.
-   - For every Person entity present, you MUST establish their structural or associative relation to the primary container page/account (e.g., via `depicts_person` or equivalent allowed metapath) and attach all corresponding literal attributes (e.g., `has_role`).
-   - Every initialized node MUST participate in at least one relation triple.
-   
-5. DYNAMIC LITERAL ATTACHMENT:
-   - When mapping literal predicates (e.g., `has_role`, `has_url`, `has_phone_number`, `has_total_balance`, `has_total_profit`, `has_total_loss`), attach the exact extracted text value as a string literal.
-   - Never output schema type names (like "String") as literal values.
+4. ROLE VS. AFFILIATION SEPARATION:
+- Connect `affiliated_with` strictly from a Person to an initialized Organisation entity ID representing an official institution/company.
+- Attach `has_role` strictly as a string literal representing job titles, occupations, or ranks.
+
+5. MANDATORY EXHAUSTIVE CONNECTIVITY:
+- YOU MUST CONNECT EVERY SINGLE ENTITY listed under AVAILABLE INITIALIZED ENTITIES.
+- It is strictly forbidden to leave any initialized Entity ID disconnected or omitted from the graph.
 
 6. CLEAN OUTPUT FORMAT:
-   - Output ONLY valid relation triples in the exact syntax: `Subject_ID | predicate | Object_ID_or_Literal`.
-   - Do NOT include markdown blocks, notes, or conversational text.
+- Output ONLY valid relation triples in the exact syntax: `Subject_ID | predicate | Object_ID_or_URI_or_Literal`.
+- Do NOT include markdown blocks, notes, or conversational text.
 
 INPUT TEXT DESCRIPTION:
 "{description}"
@@ -106,13 +119,19 @@ RELATION TRIPLES:
 """.strip()
 
 def get_geometric_counterfactual_prompt(change_from):
+    """Generates a prompt for producing string replacements with strict spatial and character length constraints."""
     char_count = len(change_from)
     words = [w for w in change_from.split() if w]
     word_count = len(words)
-    
+
     initials = [w[0].upper() for w in words]
-    initials_str = ", ".join([f"Word {i+1} MUST start with '{initials[i]}'" for i in range(len(initials))])
-    
+    initials_str = ", ".join(
+        [
+            f"Word {i+1} MUST start with '{initials[i]}'"
+            for i in range(len(initials))
+        ]
+    )
+
     return f"""ROLE:
 You are an expert OSINT and Knowledge Graph Counterfactual Generation Engine.
 
@@ -135,9 +154,10 @@ STRICT CONSTRAINT RULES:
    - Exact word count required: {word_count} word(s).
    - {initials_str}.
 
-3. CHARACTER LENGTH MATCH:
-   - Target length is around {char_count} characters.
-   - Total string length MUST be strictly between {max(1, char_count - 2)} and {char_count + 3} characters.
+3. STRICT CHARACTER LENGTH MATCH (CRITICAL FOR UI LAYOUT):
+   - Target length: EXACTLY {char_count} characters (ideal).
+   - Absolute allowed range: strictly between {max(1, char_count - 1)} and {char_count + 1} characters (MAX +-1 char).
+   - The generated name MUST be a real, syntactically and orthographically correct name within this exact length constraint.
 
 OUTPUT FORMAT:
 Output ONLY the raw replacement string. Do not include quotes, markdown formatting, prefixes, or explanations.
@@ -145,7 +165,7 @@ Output ONLY the raw replacement string. Do not include quotes, markdown formatti
 
 
 def get_counterfactual_prompt(original_graph, detected_change):
-    # Prompt για την ενημέρωση του Knowledge Graph μετά από μια οπτική αλλαγή (counterfactual edit).
+    """Generates a prompt for updating Knowledge Graph triples following a visual edit."""
     return f"""ROLE:
 You are a strict Graph Editing Engine for OSINT Knowledge Graphs. Your goal is to update the original knowledge graph based on a single visual counterfactual edit.
 
