@@ -1,7 +1,7 @@
 [
     {
         "counterfactual_image": "viber_1_cf.png",
-        "detected_change": "The original asset 'Michael Anderson' was replaced by 'Matthew Archer'.",
+        "detected_change": "The original asset 'Michael Anderson' was replaced by 'Matthew Armstrong'.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -21,17 +21,7 @@
             {
                 "subject": "Person_1",
                 "predicate": "rdfs:label",
-                "object": "Matthew Archer"
-            },
-            {
-                "subject": "Location_1",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Location"
-            },
-            {
-                "subject": "Location_1",
-                "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/United_Kingdom"
+                "object": "Matthew Armstrong"
             }
         ],
         "relations": [
@@ -41,14 +31,14 @@
                 "object": "+44 7405 812 443"
             },
             {
-                "subject": "Location_1",
-                "predicate": "has_phone_code",
-                "object": "+44"
-            },
-            {
                 "subject": "Profile_Page_1",
                 "predicate": "depicts_person",
                 "object": "Person_1"
+            },
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "associated_with_country",
+                "object": "http://dbpedia.org/resource/United_Kingdom"
             }
         ]
     }

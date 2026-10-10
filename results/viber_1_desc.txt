@@ -1,4 +1,4 @@
-Here's a semantic description of the image based on your guidelines:
+Here's a semantic description of the image, adhering to your strict guidelines:
 
 **1. PLATFORM & LAYOUT IDENTIFICATION:**
 
@@ -8,16 +8,16 @@ Here's a semantic description of the image based on your guidelines:
 **2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**
 
 *   **Contact Name:** Michael Anderson
-*   **Phone Number:** +44 7405 812 443 (displayed twice)
-*   **Dialing Code:** +44 (United Kingdom)
-*   **Section Title:** "Media, links and files"
-*   **Numeric Metric:** "45" (likely indicating the number of media items)
+*   **Phone Number (with dialing code):** +44 7405 812 443
+*   **Phone Number (alternate display):** +44 7405 812 443
+*   **Label for Phone Number:** Mobile
+*   **Section Title:** Media, links and files
+*   **Numeric Metric:** 45 (likely representing the number of media items)
 *   **Text Labels:** "Free call", "Video call", "Search", "Mute notifications", "Custom notifications", "Media visibility", "Encryption", "Disappearing messages"
-*   **Status Label:** "On" (associated with Media Visibility)
-*   **Status Label:** "Off" (associated with Disappearing Messages)
+*   **Geopolitical Reference:** United Kingdom (+44 dialing code).
 
 **3. EXCLUSION OF SECONDARY NOISE:**
 
-*   The image excludes the content of the media files displayed below the contact information.
-*   It omits any contextual messaging or post details.
-*   It avoids describing the visual style or aesthetic elements beyond identifying Viber's branding.
+*   The image content of the media files is excluded.
+*   Details about encryption and disappearing message settings are noted as labels, but their specific configuration states (On/Off) are not treated as core data points.
+*   UI control elements like toggle switches and arrow icons are acknowledged for layout context but not described in detail.

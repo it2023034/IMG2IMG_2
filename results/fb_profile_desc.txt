@@ -1,34 +1,33 @@
-Here's a precise, highly focused semantic description of the image/interface screenshot, adhering to your strict guidelines:
+Here's a semantic description of the image, adhering to your strict guidelines:
 
 **1. PLATFORM & LAYOUT IDENTIFICATION:**
 
 *   **Interface Category:** Social Media Profile View
 *   **Platform Branding:** Facebook
-*   **Layout Areas:** Header section (cover photo and profile picture), "Intro" panel (left-hand side), "Posts" panel (right-hand side).
+*   **Layout Areas:** Header section (cover photo and profile information), Left sidebar (profile picture and intro details), Main content area (posts feed).
 *   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo.
 
 **2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**
 
 *   **Profile Name:** Michael Anderson
-*   **URL:** https://www.facebook.com/michael.anderson.us.marine
-*   **Title/Affiliation:** US Marine | Proud to serve my country 🇺🇸
-*   **Intro Information:**
-    *   United States Marine Corps
-    *   Currently in Syria
-    *   From Texas, USA
-    *   Widowed
-    *   Father of one son
-    *   Joined May 2014
+*   **Organization/Title:** US Marine | Proud to serve my country 🇺🇸
+*   **Domain URL:** https://www.facebook.com/michael.anderson.us.marine
+*   **Location (Current):** Syria
+*   **Location (From):** Texas, USA
+*   **Status:** Widowed
+*   **Relationship:** Father of one son
+*   **Join Date:** May 2014
 *   **Friends Count:** 142
-*   **Post Text (December 24, 2023):** "Another day, another mission. Proud to serve. Miss the ones I love. God bless the USA 🇺🇸"
-*   **Numeric Metrics (Post):** 187 Reactions, 26 Comments, 8 Shares
+*   **Post Text (Partial):** "Another day, another mission. Proud to serve. Miss the ones I love. God bless the USA 🇺🇸"
+*   **Date of Post:** December 24, 2023
 
 **3. EXCLUSION OF SECONDARY NOISE:**
 
-*   All post content beyond the extracted text snippet.
-*   Minor UI elements like "Message" button and filters icon.
-*   Details of individual friend profiles in the "See all friends" section.
+*   All post content beyond the partial text excerpt.
+*   Specific details within friend lists.
+*   UI control elements (buttons, filters).
+*   Temporary metadata (notification counts).
 
 
 
-This description focuses solely on identifying core entities, their relationships, and key attributes as presented within the screenshot, avoiding extraneous details.
+This description focuses solely on the core entities and identifiers present in the image, avoiding extraneous information as requested.

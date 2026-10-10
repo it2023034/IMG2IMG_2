@@ -1,7 +1,7 @@
 [
     {
         "image": "viber_1.png",
-        "description": "Here's a semantic description of the image based on your guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Messaging application contact information view.\n*   **Platform Branding:** Viber (indicated by logo and UI elements). The layout is a full-screen contact details page within a messaging app.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Contact Name:** Michael Anderson\n*   **Phone Number:** +44 7405 812 443 (displayed twice)\n*   **Dialing Code:** +44 (United Kingdom)\n*   **Section Title:** \"Media, links and files\"\n*   **Numeric Metric:** \"45\" (likely indicating the number of media items)\n*   **Text Labels:** \"Free call\", \"Video call\", \"Search\", \"Mute notifications\", \"Custom notifications\", \"Media visibility\", \"Encryption\", \"Disappearing messages\"\n*   **Status Label:** \"On\" (associated with Media Visibility)\n*   **Status Label:** \"Off\" (associated with Disappearing Messages)\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   The image excludes the content of the media files displayed below the contact information.\n*   It omits any contextual messaging or post details.\n*   It avoids describing the visual style or aesthetic elements beyond identifying Viber's branding.",
+        "description": "Here's a semantic description of the image, adhering to your strict guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Messaging application contact information view.\n*   **Platform Branding:** Viber (indicated by logo and UI elements). The layout is a full-screen contact details page within a messaging app.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Contact Name:** Michael Anderson\n*   **Phone Number (with dialing code):** +44 7405 812 443\n*   **Phone Number (alternate display):** +44 7405 812 443\n*   **Label for Phone Number:** Mobile\n*   **Section Title:** Media, links and files\n*   **Numeric Metric:** 45 (likely representing the number of media items)\n*   **Text Labels:** \"Free call\", \"Video call\", \"Search\", \"Mute notifications\", \"Custom notifications\", \"Media visibility\", \"Encryption\", \"Disappearing messages\"\n*   **Geopolitical Reference:** United Kingdom (+44 dialing code).\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   The image content of the media files is excluded.\n*   Details about encryption and disappearing message settings are noted as labels, but their specific configuration states (On/Off) are not treated as core data points.\n*   UI control elements like toggle switches and arrow icons are acknowledged for layout context but not described in detail.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -22,16 +22,6 @@
                 "subject": "Person_1",
                 "predicate": "rdfs:label",
                 "object": "Michael Anderson"
-            },
-            {
-                "subject": "Location_1",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Location"
-            },
-            {
-                "subject": "Location_1",
-                "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/United_Kingdom"
             }
         ],
         "relations": [
@@ -41,14 +31,14 @@
                 "object": "+44 7405 812 443"
             },
             {
-                "subject": "Location_1",
-                "predicate": "has_phone_code",
-                "object": "+44"
-            },
-            {
                 "subject": "Profile_Page_1",
                 "predicate": "depicts_person",
                 "object": "Person_1"
+            },
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "associated_with_country",
+                "object": "http://dbpedia.org/resource/United_Kingdom"
             }
         ]
     }

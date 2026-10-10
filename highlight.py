@@ -19,8 +19,9 @@ class CounterfactualHighlighter:
         highlight_color: tuple = (0, 255, 255),  # Yellow overlay (BGR)
         border_color: tuple = (0, 0, 255),  # Red border stroke (BGR)
         alpha: float = 0.35,  # Transparency
+        padding: int = 4,  # Extra spatial padding (pixels) around detected box
     ):
-        """Locates target_text in img_path and saves a highlighted version."""
+        """Locates target_text in img_path and saves a highlighted version with padding."""
         if not os.path.exists(img_path):
             print(f"[HIGHLIGHT ERROR] Image path not found: {img_path}")
             return False
@@ -30,6 +31,7 @@ class CounterfactualHighlighter:
             print(f"[HIGHLIGHT ERROR] Could not load image: {img_path}")
             return False
 
+        h_img, w_img = img.shape[:2]
         results = self.reader.readtext(img)
         target_clean = " ".join(target_text.lower().strip().split())
 
@@ -40,13 +42,13 @@ class CounterfactualHighlighter:
 
             if target_clean in found_text_clean:
                 pts = np.array(bbox, dtype=np.int32)
+                x_min_orig, y_min_orig = np.min(pts, axis=0)
+                x_max_orig, y_max_orig = np.max(pts, axis=0)
 
                 words = found_text_clean.split()
                 if len(words) > 1 and target_clean in words:
                     # Precise sub-word bound calculation
-                    x_min, y_min = np.min(pts, axis=0)
-                    x_max, y_max = np.max(pts, axis=0)
-                    full_w = x_max - x_min
+                    full_w = x_max_orig - x_min_orig
                     target_idx = words.index(target_clean)
 
                     char_counts = [len(w) for w in words]
@@ -55,26 +57,30 @@ class CounterfactualHighlighter:
                     start_char = sum(char_counts[:target_idx]) + target_idx
                     end_char = start_char + len(target_clean)
 
-                    sub_x1 = max(
-                        x_min,
-                        x_min + int(full_w * (start_char / total_chars)) - 2,
-                    )
-                    sub_x2 = min(
-                        x_max,
-                        x_min + int(full_w * (end_char / total_chars)) + 2,
-                    )
+                    sub_x1 = x_min_orig + int(full_w * (start_char / total_chars))
+                    sub_x2 = x_min_orig + int(full_w * (end_char / total_chars))
 
-                    poly_pts = np.array(
-                        [
-                            [sub_x1, y_min],
-                            [sub_x2, y_min],
-                            [sub_x2, y_max],
-                            [sub_x1, y_max],
-                        ],
-                        dtype=np.int32,
-                    )
+                    x_min, y_min = sub_x1, y_min_orig
+                    x_max, y_max = sub_x2, y_max_orig
                 else:
-                    poly_pts = pts
+                    x_min, y_min = x_min_orig, y_min_orig
+                    x_max, y_max = x_max_orig, y_max_orig
+
+                # --- APPLY PADDING WITH BOUNDARY CLAMPING ---
+                x_min = max(0, x_min - padding)
+                y_min = max(0, y_min - padding)
+                x_max = min(w_img, x_max + padding)
+                y_max = min(h_img, y_max + padding)
+
+                poly_pts = np.array(
+                    [
+                        [x_min, y_min],
+                        [x_max, y_min],
+                        [x_max, y_max],
+                        [x_min, y_max],
+                    ],
+                    dtype=np.int32,
+                )
 
                 break
 

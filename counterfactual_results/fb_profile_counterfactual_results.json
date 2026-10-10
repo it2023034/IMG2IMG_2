@@ -24,36 +24,6 @@
                 "object": "Michael Anderson"
             },
             {
-                "subject": "Location_1",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Location"
-            },
-            {
-                "subject": "Location_1",
-                "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/Texas"
-            },
-            {
-                "subject": "Location_2",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Location"
-            },
-            {
-                "subject": "Location_2",
-                "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/Spain"
-            },
-            {
-                "subject": "Location_3",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Location"
-            },
-            {
-                "subject": "Location_3",
-                "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/United_States_of_America"
-            },
-            {
                 "subject": "Organisation_1",
                 "predicate": "rdf:type",
                 "object": "http://dbpedia.org/ontology/Organisation"
@@ -61,7 +31,7 @@
             {
                 "subject": "Organisation_1",
                 "predicate": "rdfs:label",
-                "object": "United States Marine Corps"
+                "object": "US Marine"
             },
             {
                 "subject": "Visual_Symbol_1",
@@ -70,6 +40,16 @@
             },
             {
                 "subject": "Visual_Symbol_1",
+                "predicate": "rdfs:label",
+                "object": "United States Marine Corps emblem"
+            },
+            {
+                "subject": "Visual_Symbol_2",
+                "predicate": "rdf:type",
+                "object": "Visual_Symbol"
+            },
+            {
+                "subject": "Visual_Symbol_2",
                 "predicate": "rdfs:label",
                 "object": "Facebook logo"
             }
@@ -86,6 +66,16 @@
                 "object": "https://www.facebook.com/michael.anderson.us.marine"
             },
             {
+                "subject": "Profile_Page_1",
+                "predicate": "displays_symbol",
+                "object": "Visual_Symbol_1"
+            },
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "displays_symbol",
+                "object": "Visual_Symbol_2"
+            },
+            {
                 "subject": "Person_1",
                 "predicate": "has_role",
                 "object": "US Marine"
@@ -98,22 +88,12 @@
             {
                 "subject": "Person_1",
                 "predicate": "located_in",
-                "object": "Location_2"
-            },
-            {
-                "subject": "Person_1",
-                "predicate": "originates_from",
-                "object": "Location_1"
-            },
-            {
-                "subject": "Person_1",
-                "predicate": "located_in",
-                "object": "Location_3"
+                "object": "http://dbpedia.org/resource/Spain"
             },
             {
                 "subject": "Profile_Page_1",
-                "predicate": "displays_symbol",
-                "object": "Visual_Symbol_1"
+                "predicate": "associated_with_country",
+                "object": "http://dbpedia.org/resource/United_States_of_America"
             }
         ]
     }

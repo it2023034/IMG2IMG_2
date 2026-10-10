@@ -1,7 +1,7 @@
 [
     {
         "image": "viber_2.png",
-        "description": "Here's a semantic description of the image based on your guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Messaging application view (contact details/profile screen).\n*   **Platform Branding:** Viber (indicated by \"Viber’s end-to-end encryption\" text).\n*   **Layout Areas:** The interface is divided into a header area containing the contact's profile picture and name, followed by a list of settings options.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Contact Name:** Richard Coleman\n*   **Phone Number:** +44 7511 998 204 (Mobile)\n*   **International Dialing Prefix:** +44 (United Kingdom)\n*   **Encryption Information:** \"Messages in this chat are protected by Viber’s end-to-end encryption.\"\n*   **Settings Labels:** \"Mute notifications\", \"Custom notifications\", \"Media visibility\"\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   The image excludes any content of messages, specific notification settings values (beyond the labels), and detailed explanations beyond what's directly stated in the text.",
+        "description": "Here's a semantic description of the image based on your guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Messaging application view (contact details/profile screen).\n*   **Platform Branding:** Viber (indicated by \"Viber's end-to-end encryption\" text).\n*   **Layout Areas:** The interface is divided into sections: a header area with contact information and action buttons, followed by a list of settings.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Contact Name:** Richard Coleman\n*   **Phone Number:** +44 7511 998 204 (Mobile)\n*   **International Dialing Prefix:** +44 (United Kingdom)\n*   **Encryption Information:** \"Messages in this chat are protected by Viber's end-to-end encryption.\"\n*   **Settings Labels:** \"Mute notifications\", \"Custom notifications\", \"Media visibility\"\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   The image excludes any content of messages, specific notification settings values (beyond the labels), and detailed explanations beyond what's directly stated in the text.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -22,33 +22,23 @@
                 "subject": "Person_1",
                 "predicate": "rdfs:label",
                 "object": "Richard Coleman"
-            },
-            {
-                "subject": "Location_1",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Location"
-            },
-            {
-                "subject": "Location_1",
-                "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/United_Kingdom"
             }
         ],
         "relations": [
-            {
-                "subject": "Profile_Page_1",
-                "predicate": "depicts_person",
-                "object": "Person_1"
-            },
             {
                 "subject": "Person_1",
                 "predicate": "has_phone_number",
                 "object": "+44 7511 998 204"
             },
             {
-                "subject": "Location_1",
-                "predicate": "has_phone_code",
-                "object": "+44"
+                "subject": "Profile_Page_1",
+                "predicate": "depicts_person",
+                "object": "Person_1"
+            },
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "associated_with_country",
+                "object": "http://dbpedia.org/resource/United_Kingdom"
             }
         ]
     }

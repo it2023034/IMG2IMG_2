@@ -17,9 +17,29 @@
                 "subject": "Person_1",
                 "predicate": "rdfs:label",
                 "object": "Mia Patel"
+            },
+            {
+                "subject": "Organisation_1",
+                "predicate": "rdf:type",
+                "object": "http://dbpedia.org/ontology/Organisation"
+            },
+            {
+                "subject": "Organisation_1",
+                "predicate": "rdfs:label",
+                "object": "CapitalFXpro"
             }
         ],
         "relations": [
+            {
+                "subject": "Investment_Account_Page_1",
+                "predicate": "belongs_to",
+                "object": "Organisation_1"
+            },
+            {
+                "subject": "Investment_Account_Page_1",
+                "predicate": "depicts_person",
+                "object": "Person_1"
+            },
             {
                 "subject": "Investment_Account_Page_1",
                 "predicate": "has_url",
@@ -32,13 +52,13 @@
             },
             {
                 "subject": "Investment_Account_Page_1",
-                "predicate": "has_total_profit",
+                "predicate": "has_profit",
                 "object": "€384.15"
             },
             {
-                "subject": "Investment_Account_Page_1",
-                "predicate": "depicts_person",
-                "object": "Person_1"
+                "subject": "Person_1",
+                "predicate": "has_role",
+                "object": "Standard Investor"
             }
         ]
     }

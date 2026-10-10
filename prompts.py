@@ -87,18 +87,19 @@ GRAPH GRAMMAR & CONNECTION RULES:
 - Never assign a predicate to an unapproved Subject class.
 
 2. DIRECT DBPEDIA LOCATION & COUNTRY MAPPING RULE:
-- Connect Person entities directly to DBpedia Location URIs using `originates_from` or `located_in` (e.g., Person_<ID> | originates_from | http://dbpedia.org/resource/<Country_Name>).
-- Connect Profile_Page entities directly to DBpedia Location URIs using `associated_with_country` (e.g., Profile_Page_<ID> | associated_with_country | http://dbpedia.org/resource/<Country_Name>).
+- CURRENT LOCATION (located_in): Connect Person entities to DBpedia Location URIs using `located_in` whenever the text describes current physical presence or active location (e.g., Person_<ID> | located_in | http://dbpedia.org/resource/<Location_Name>).
+- ORIGIN / HOMELAND (originates_from): Connect Person entities to DBpedia Location URIs using `originates_from` whenever the text describes origin, birthplace, or homeland.
+- PROFILE COUNTRY (associated_with_country): Connect Profile_Page entities directly to DBpedia Location URIs using `associated_with_country`.
 - MANDATORY PHONE COUNTRY DERIVATION: Whenever a phone number containing an international dialing prefix or country indicator is present, YOU MUST ALWAYS establish the `associated_with_country` relation connecting `Profile_Page_1` directly to the DBpedia Country URI.
 - NEVER create intermediate Location entity IDs. Map the target location strictly as a DBpedia URI in the Object position.
 
 3. EXHAUSTIVE LITERAL & ATTRIBUTE ATTACHMENT:
 - Extract and attach ALL explicit literal attributes present in the description to their valid subjects:
-  * Phone numbers via `has_phone_number`
-  * Financial metrics (balances, profits) via `has_total_balance` and `has_profit`
-  * URLs via `has_url`
-  * Job titles, ranks, or investor status via `has_role`
-  * Visual marks/emblems via `displays_symbol`
+- Phone numbers via `has_phone_number`
+- Financial metrics (balances, profits) via `has_total_balance` and `has_profit`
+- URLs via `has_url`
+- Job titles, ranks, or investor status via `has_role`
+- Visual marks/emblems via `displays_symbol`
 
 4. ROLE VS. AFFILIATION SEPARATION:
 - Connect `affiliated_with` strictly from a Person to an initialized Organisation entity ID representing an official institution/company.

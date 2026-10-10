@@ -1,8 +1,94 @@
 import json
 import os
 import re
+from difflib import SequenceMatcher
 import phonenumbers
 from phonenumbers import geocoder
+import easyocr
+
+# Singleton αρχικοποίηση EasyOCR (Lazy loading)
+_ocr_reader = None
+
+
+def get_ocr_reader():
+    """Επιστρέφει ένα singleton instance του EasyOCR reader."""
+    global _ocr_reader
+    if _ocr_reader is None:
+        _ocr_reader = easyocr.Reader(["en"], gpu=True)
+    return _ocr_reader
+
+
+def ground_text_to_image_pixels(
+    extracted_text: str, img_path: str, threshold: float = 0.65
+) -> str:
+    """GENERIC GROUNDING: Συγκρίνει το κείμενο που εξήγαγε το VLM με τα πραγματικά pixels 
+    της εικόνας μέσω OCR. Αν βρει κείμενο στην εικόνα με ομοιότητα > threshold, 
+    επιστρέφει την ΑΚΡΙΒΗ γραφή των pixels.
+    """
+    if (
+        not extracted_text
+        or not isinstance(extracted_text, str)
+        or len(extracted_text.strip()) < 2
+    ):
+        return extracted_text
+
+    if not os.path.exists(img_path):
+        return extracted_text
+
+    try:
+        reader = get_ocr_reader()
+        results = reader.readtext(img_path)
+
+        target_clean = extracted_text.strip().lower()
+        best_match = extracted_text
+        best_score = 0.0
+
+        for bbox, text, prob in results:
+            found_clean = text.strip().lower()
+
+            # Απευθείας ταύτιση -> Επιστρέφει την ακριβή γραφή των pixels
+            if target_clean == found_clean:
+                return text.strip()
+
+            # Fuzzy match για μικρολάθη του VLM/OCR
+            score = SequenceMatcher(None, target_clean, found_clean).ratio()
+            if score > best_score and score >= threshold:
+                best_score = score
+                best_match = text.strip()
+
+        if best_score >= threshold:
+            print(
+                f"[GENERIC GROUNDING FIX] VLM entity label '{extracted_text}' corrected to exact image pixels: '{best_match}'"
+            )
+            return best_match
+
+    except Exception as e:
+        print(f"[GROUNDING WARNING] Could not perform OCR grounding on text: {e}")
+
+    return extracted_text
+
+
+def sync_description_with_grounded_entities(
+    description: str, grounded_changes: dict
+) -> str:
+    """TARGETED DESC SYNC: Αντικαθιστά στο description ΜΟΝΟ τις συγκεκριμένες 
+    λανθασμένες συμβολοσειρές που διορθώθηκαν κατά το Entity Grounding (π.χ. 'Mappy' -> 'Mary').
+    """
+    if not description or not grounded_changes:
+        return description
+
+    updated_desc = description
+    for old_val, new_val in grounded_changes.items():
+        if old_val and new_val and old_val != new_val:
+            pattern = r"\b" + re.escape(old_val) + r"\b"
+            updated_desc = re.sub(
+                pattern, new_val, updated_desc, flags=re.IGNORECASE
+            )
+            print(
+                f"[DESC SYNC] Replaced '{old_val}' with '{new_val}' in description."
+            )
+
+    return updated_desc
 
 
 def clean_term(text):
@@ -99,13 +185,17 @@ def filter_ner_by_allowed_classes(ner_list, allowed_classes):
     allowed_ids = set()
     for ent in ner_list:
         pred = str(ent.get("predicate", "")).strip().lower()
-        obj = str(ent.get("object", "")).strip().lower().replace('"', "").replace("'", "")
+        obj = (
+            str(ent.get("object", ""))
+            .strip()
+            .lower()
+            .replace('"', "")
+            .replace("'", "")
+        )
         subj = str(ent.get("subject", "")).strip()
 
-        # 1. Τυπικός έλεγχος rdf:type
         if pred in ["rdf:type", "type"] and obj in allowed_classes_lower:
             allowed_ids.add(subj)
-        # 2. Safety net: Αν το ID του subject περιέχει επιτρεπόμενη κλάση (π.χ. "Person_1", "Profile_Page_1")
         elif any(c in subj.lower() for c in allowed_classes_lower):
             allowed_ids.add(subj)
 
@@ -113,10 +203,7 @@ def filter_ner_by_allowed_classes(ner_list, allowed_classes):
 
 
 def deduplicate_entities_by_label(ner_list):
-    """Deduplicates entity IDs and reindexes them sequentially per class starting strictly from 1
-
-    (e.g., Organisation_2 -> Organisation_1).
-    """
+    """Deduplicates entity IDs and reindexes them sequentially per class starting strictly from 1."""
     seen = set()
     unique_entities = []
 
@@ -166,9 +253,7 @@ def apply_dynamic_ner_filtering(img_name, ner_list):
             "organisation",
             "visual_symbol",
         }
-        return filter_ner_by_allowed_classes(
-            ner_list, allowed_profile_classes
-        )
+        return filter_ner_by_allowed_classes(ner_list, allowed_profile_classes)
 
     elif any(
         k in img_name_lower
@@ -239,7 +324,6 @@ def filter_relations_by_schema(
     seen_rel_keys = set()
     img_name_lower = img_name.lower()
 
-    # ΑΥΣΤΗΡΟΣ ΟΡΙΣΜΟΣ ΕΠΙΤΡΕΠΟΜΕΝΩΝ RELATIONS ΓΙΑ ΤΟ VIBER
     viber_allowed_predicates = {
         "has_phone_number",
         "originates_from",
@@ -258,12 +342,10 @@ def filter_relations_by_schema(
         p_lower = p.lower()
         o_lower = o.lower()
 
-        # ΑΥΣΤΗΡΟΣ ΚΑΝΟΝΑΣ VIBER: Επιτρέπονται ΑΠΟΚΛΕΙΣΤΙΚΑ τα 3 ορισμένα predicates
         if "viber" in img_name_lower and p_lower not in viber_allowed_predicates:
             continue
 
-        # Direct URI predicates (like DBpedia Location links) and literal attributes
-        external_uri_predicates = ["associated_with_country", "associated_with_country", "located_in"]
+        external_uri_predicates = ["associated_with_country", "located_in"]
         literal_keywords = [
             "phone",
             "string",
@@ -275,8 +357,10 @@ def filter_relations_by_schema(
             "url",
             "code",
         ]
-        
-        is_direct_value = any(k in p_lower for k in literal_keywords) or (p_lower in external_uri_predicates)
+
+        is_direct_value = any(k in p_lower for k in literal_keywords) or (
+            p_lower in external_uri_predicates
+        )
 
         if s_lower not in valid_entity_ids:
             continue
@@ -291,7 +375,9 @@ def filter_relations_by_schema(
         raw_o_type = (
             entity_types.get(o_lower, re.sub(r"_\d+$", "", o_lower))
             if not is_direct_value
-            else "location" if p_lower in external_uri_predicates else "string"
+            else "location"
+            if p_lower in external_uri_predicates
+            else "string"
         )
 
         match_found = False
@@ -347,7 +433,8 @@ def clean_graph_entities(ner_list, valid_relations, schema_content):
 
         if s in valid_schema_ids:
             if s in connected_ids or any(
-                k in s_lower for k in ["page", "account", "interface", "profile"]
+                k in s_lower
+                for k in ["page", "account", "interface", "profile"]
             ):
                 final_entities.append(ent)
 
@@ -362,7 +449,11 @@ def process_pipeline_relations(
     cleaned_relations = clean_and_deduplicate(relations_list)
 
     valid_relations = filter_relations_by_schema(
-        cleaned_relations, ner_list, schema_content, id_map=id_map, img_name=img_name
+        cleaned_relations,
+        ner_list,
+        schema_content,
+        id_map=id_map,
+        img_name=img_name,
     )
 
     final_entities, valid_relations = clean_graph_entities(
@@ -382,12 +473,7 @@ def apply_rdf_ontology_mapping(entities):
     mapped_entities = []
     for ent in entities:
         pred = str(ent.get("predicate", ""))
-        obj = (
-            str(ent.get("object", ""))
-            .strip()
-            .replace('"', "")
-            .replace("'", "")
-        )
+        obj = str(ent.get("object", "")).strip().replace('"', "").replace("'", "")
 
         if pred.lower() in ["rdf:type", "type"]:
             obj_lower = obj.lower()
@@ -399,10 +485,11 @@ def apply_rdf_ontology_mapping(entities):
     return mapped_entities
 
 
-def post_process_graph(graph_entry):
+def post_process_graph(graph_entry, img_path=""):
     """Applies clean post-processing rules to final Knowledge Graph entities and relations."""
     relations = graph_entry.get("relations", [])
     entities = graph_entry.get("entities", [])
+    grounded_changes = {}  # Καταγραφή των αλλαγών (old_val -> new_val)
 
     # =========================================================================
     # 1. FORCE SEQUENTIAL RE-INDEXING (e.g., Organisation_2 -> Organisation_1)
@@ -431,8 +518,16 @@ def post_process_graph(graph_entry):
     # 2. CLEAN & FILTER RELATIONS (Remove 'N/A', 'null', 'none', etc.)
     # =========================================================================
     clean_rels = []
-    invalid_literals = {"string", "none", "null", "xsd:string", "n/a", "unknown", ""}
-    
+    invalid_literals = {
+        "string",
+        "none",
+        "null",
+        "xsd:string",
+        "n/a",
+        "unknown",
+        "",
+    }
+
     for rel in relations:
         obj_val = str(rel.get("object", "")).strip()
         if obj_val.lower() not in invalid_literals:
@@ -478,27 +573,33 @@ def post_process_graph(graph_entry):
     if profile_acc_ids:
         main_profile = profile_acc_ids[0]
         has_country_rel = any(
-            r.get("subject") == main_profile and r.get("predicate") == "associated_with_country"
+            r.get("subject") == main_profile
+            and r.get("predicate") == "associated_with_country"
             for r in clean_rels
         )
-        
-        # Αν λείπει η σχέση της χώρας, την εξάγουμε δυναμικά από το τηλέφωνο
+
         if not has_country_rel:
             for r in clean_rels:
                 if r.get("predicate") == "has_phone_number":
                     phone_val = str(r.get("object", "")).strip()
                     country_uri = get_country_uri_from_phone(phone_val)
-                    
-                    if country_uri:
-                        clean_rels.append({
-                            "subject": main_profile,
-                            "predicate": "associated_with_country",
-                            "object": country_uri
-                        })
-                        print(f"[STRICT PARSE] Derived Country '{country_uri}' from Phone '{phone_val}'")
-                        break
-    # =========================================================================
 
+                    if country_uri:
+                        clean_rels.append(
+                            {
+                                "subject": main_profile,
+                                "predicate": "associated_with_country",
+                                "object": country_uri,
+                            }
+                        )
+                        print(
+                            f"[STRICT PARSE] Derived Country '{country_uri}' from Phone '{phone_val}'"
+                        )
+                        break
+
+    # =========================================================================
+    # 4. TARGETED ENTITY GROUNDING (STRICTLY FOR PERSON LABELS & NAMES)
+    # =========================================================================
     processed_entities = []
     for ent in entities:
         subj = ent.get("subject")
@@ -507,6 +608,14 @@ def post_process_graph(graph_entry):
 
         stype = subject_types.get(subj, "").lower()
         is_label_pred = pred.lower() in ["label", "rdfs:label"]
+
+        # ΚΑΝΟΝΑΣ: Εκτελούμε Grounding ΑΠΟΚΛΕΙΣΤΙΚΑ αν η οντότητα αφορά Πρόσωπο (Person)
+        # Αυτό αποτρέπει την αλλοίωση σε logos, emblems & ονόματα πλατφορμών!
+        if is_label_pred and img_path and "person" in stype:
+            grounded_obj = ground_text_to_image_pixels(obj, img_path)
+            if grounded_obj != obj:
+                grounded_changes[obj] = grounded_obj  # Καταγραφή διόρθωσης
+            obj = grounded_obj
 
         if "investment_account_page" in stype and is_label_pred:
             continue
@@ -526,7 +635,9 @@ def post_process_graph(graph_entry):
 
     graph_entry["entities"] = apply_rdf_ontology_mapping(processed_entities)
     graph_entry["relations"] = clean_rels
-    return graph_entry
+
+    return graph_entry, grounded_changes
+
 
 def get_country_uri_from_phone(phone_str):
     """Parses ANY international phone number string dynamically using ITU-T standards 
@@ -534,17 +645,13 @@ def get_country_uri_from_phone(phone_str):
     and maps it to its exact DBpedia Country URI. Returns None if invalid or not found.
     """
     try:
-        # Strict parsing & validation βάσει διεθνών προτύπων
         parsed_num = phonenumbers.parse(phone_str, None)
         if phonenumbers.is_valid_number(parsed_num):
-            # Δυναμική εξαγωγή της χώρας στα αγγλικά (π.χ. "Germany", "France", "Greece", "United Kingdom")
             country_name = geocoder.country_name_for_number(parsed_num, "en")
             if country_name:
-                # Μετατροπή σε DBpedia URI (π.χ. http://dbpedia.org/resource/Germany)
                 formatted_country = country_name.replace(" ", "_")
                 return f"http://dbpedia.org/resource/{formatted_country}"
     except Exception:
         pass
-    
-    # Αν δεν είναι έγκυρος διεθνής αριθμός, δεν υποθέτει απολύτως τίποτα
+
     return None

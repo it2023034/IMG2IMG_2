@@ -1,7 +1,7 @@
 [
     {
         "image": "fb_profile.png",
-        "description": "Here's a precise, highly focused semantic description of the image/interface screenshot, adhering to your strict guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Social Media Profile View\n*   **Platform Branding:** Facebook\n*   **Layout Areas:** Header section (cover photo and profile picture), \"Intro\" panel (left-hand side), \"Posts\" panel (right-hand side).\n*   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Profile Name:** Michael Anderson\n*   **URL:** https://www.facebook.com/michael.anderson.us.marine\n*   **Title/Affiliation:** US Marine | Proud to serve my country 🇺🇸\n*   **Intro Information:**\n    *   United States Marine Corps\n    *   Currently in Syria\n    *   From Texas, USA\n    *   Widowed\n    *   Father of one son\n    *   Joined May 2014\n*   **Friends Count:** 142\n*   **Post Text (December 24, 2023):** \"Another day, another mission. Proud to serve. Miss the ones I love. God bless the USA 🇺🇸\"\n*   **Numeric Metrics (Post):** 187 Reactions, 26 Comments, 8 Shares\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   All post content beyond the extracted text snippet.\n*   Minor UI elements like \"Message\" button and filters icon.\n*   Details of individual friend profiles in the \"See all friends\" section.\n\n\n\nThis description focuses solely on identifying core entities, their relationships, and key attributes as presented within the screenshot, avoiding extraneous details.",
+        "description": "Here's a semantic description of the image, adhering to your strict guidelines:\n\n**1. PLATFORM & LAYOUT IDENTIFICATION:**\n\n*   **Interface Category:** Social Media Profile View\n*   **Platform Branding:** Facebook\n*   **Layout Areas:** Header section (cover photo and profile information), Left sidebar (profile picture and intro details), Main content area (posts feed).\n*   **Emblems/Icons:** United States Marine Corps emblem, Facebook logo.\n\n**2. TEXTUAL PRIMACY & CORE IDENTIFIERS:**\n\n*   **Profile Name:** Michael Anderson\n*   **Organization/Title:** US Marine | Proud to serve my country 🇺🇸\n*   **Domain URL:** https://www.facebook.com/michael.anderson.us.marine\n*   **Location (Current):** Syria\n*   **Location (From):** Texas, USA\n*   **Status:** Widowed\n*   **Relationship:** Father of one son\n*   **Join Date:** May 2014\n*   **Friends Count:** 142\n*   **Post Text (Partial):** \"Another day, another mission. Proud to serve. Miss the ones I love. God bless the USA 🇺🇸\"\n*   **Date of Post:** December 24, 2023\n\n**3. EXCLUSION OF SECONDARY NOISE:**\n\n*   All post content beyond the partial text excerpt.\n*   Specific details within friend lists.\n*   UI control elements (buttons, filters).\n*   Temporary metadata (notification counts).\n\n\n\nThis description focuses solely on the core entities and identifiers present in the image, avoiding extraneous information as requested.",
         "entities": [
             {
                 "subject": "Profile_Page_1",
@@ -24,36 +24,6 @@
                 "object": "Michael Anderson"
             },
             {
-                "subject": "Location_1",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Location"
-            },
-            {
-                "subject": "Location_1",
-                "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/Texas"
-            },
-            {
-                "subject": "Location_2",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Location"
-            },
-            {
-                "subject": "Location_2",
-                "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/Syria"
-            },
-            {
-                "subject": "Location_3",
-                "predicate": "rdf:type",
-                "object": "http://dbpedia.org/ontology/Location"
-            },
-            {
-                "subject": "Location_3",
-                "predicate": "owl:sameAs",
-                "object": "http://dbpedia.org/resource/United_States_of_America"
-            },
-            {
                 "subject": "Organisation_1",
                 "predicate": "rdf:type",
                 "object": "http://dbpedia.org/ontology/Organisation"
@@ -61,7 +31,7 @@
             {
                 "subject": "Organisation_1",
                 "predicate": "rdfs:label",
-                "object": "United States Marine Corps"
+                "object": "US Marine"
             },
             {
                 "subject": "Visual_Symbol_1",
@@ -70,6 +40,16 @@
             },
             {
                 "subject": "Visual_Symbol_1",
+                "predicate": "rdfs:label",
+                "object": "United States Marine Corps emblem"
+            },
+            {
+                "subject": "Visual_Symbol_2",
+                "predicate": "rdf:type",
+                "object": "Visual_Symbol"
+            },
+            {
+                "subject": "Visual_Symbol_2",
                 "predicate": "rdfs:label",
                 "object": "Facebook logo"
             }
@@ -86,6 +66,16 @@
                 "object": "https://www.facebook.com/michael.anderson.us.marine"
             },
             {
+                "subject": "Profile_Page_1",
+                "predicate": "displays_symbol",
+                "object": "Visual_Symbol_1"
+            },
+            {
+                "subject": "Profile_Page_1",
+                "predicate": "displays_symbol",
+                "object": "Visual_Symbol_2"
+            },
+            {
                 "subject": "Person_1",
                 "predicate": "has_role",
                 "object": "US Marine"
@@ -98,22 +88,12 @@
             {
                 "subject": "Person_1",
                 "predicate": "located_in",
-                "object": "Location_2"
-            },
-            {
-                "subject": "Person_1",
-                "predicate": "originates_from",
-                "object": "Location_1"
-            },
-            {
-                "subject": "Person_1",
-                "predicate": "located_in",
-                "object": "Location_3"
+                "object": "http://dbpedia.org/resource/Syria"
             },
             {
                 "subject": "Profile_Page_1",
-                "predicate": "displays_symbol",
-                "object": "Visual_Symbol_1"
+                "predicate": "associated_with_country",
+                "object": "http://dbpedia.org/resource/United_States_of_America"
             }
         ]
     }
