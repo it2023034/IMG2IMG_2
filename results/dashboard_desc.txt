@@ -11,7 +11,7 @@ Here's a semantic description of the image based on your guidelines:
 
 *   **Organization Name:** CapitalFXpro
 *   **Tagline:** Trade. Invest. Grow.
-*   **User Profile:** Mappy Pappa (Standard Investor)
+*   **User Profile:** Mary Pappa (Standard Investor)
 *   **Account Metrics:**
     *   Total Balance: €12,564.32 (+€2,584.32 (25.67%) All Time)
     *   Today's Profit: €384.15 (+3.14% Yesterday)
