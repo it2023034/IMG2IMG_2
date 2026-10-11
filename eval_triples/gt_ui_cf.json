@@ -5,12 +5,6 @@
       {"subject": "Profile_Page_1", "predicate": "platform", "object": "http://dbpedia.org/resource/Facebook"},
       {"subject": "Person_1", "predicate": "rdf:type", "object": "http://dbpedia.org/ontology/Person"},
       {"subject": "Person_1", "predicate": "rdfs:label", "object": "Michael Anderson"},
-      {"subject": "Location_1", "predicate": "rdf:type", "object": "http://dbpedia.org/ontology/Location"},
-      {"subject": "Location_1", "predicate": "owl:sameAs", "object": "http://dbpedia.org/resource/Texas"},
-      {"subject": "Location_2", "predicate": "rdf:type", "object": "http://dbpedia.org/ontology/Location"},
-      {"subject": "Location_2", "predicate": "owl:sameAs", "object": "http://dbpedia.org/resource/Spain"},
-      {"subject": "Location_3", "predicate": "rdf:type", "object": "http://dbpedia.org/ontology/Location"},
-      {"subject": "Location_3", "predicate": "owl:sameAs", "object": "http://dbpedia.org/resource/United_States_of_America"},
       {"subject": "Organisation_1", "predicate": "rdf:type", "object": "http://dbpedia.org/ontology/Organisation"},
       {"subject": "Organisation_1", "predicate": "rdfs:label", "object": "United States Marine Corps"},
       {"subject": "Visual_Symbol_1", "predicate": "rdf:type", "object": "Visual_Symbol"},
@@ -23,14 +17,13 @@
     "relations": [
       {"subject": "Profile_Page_1", "predicate": "depicts_person", "object": "Person_1"},
       {"subject": "Profile_Page_1", "predicate": "has_url", "object": "https://www.facebook.com/michael.anderson.us.marine"},
+      {"subject": "Profile_Page_1", "predicate": "associated_with_country", "object": "http://dbpedia.org/resource/United_States_of_America"},
+      {"subject": "Person_1", "predicate": "located_in", "object": "http://dbpedia.org/resource/Spain"},
       {"subject": "Person_1", "predicate": "has_role", "object": "US Marine"},
-      {"subject": "Person_1", "predicate": "affiliated_with", "object": "Organisation_1"},
-      {"subject": "Person_1", "predicate": "located_in", "object": "Location_2"},
-      {"subject": "Person_1", "predicate": "originates_from", "object": "Location_1"},
-      {"subject": "Person_1", "predicate": "located_in", "object": "Location_3"},
       {"subject": "Profile_Page_1", "predicate": "displays_symbol", "object": "Visual_Symbol_1"},
       {"subject": "Profile_Page_1", "predicate": "displays_symbol", "object": "Visual_Symbol_2"},
-      {"subject": "Profile_Page_1", "predicate": "displays_symbol", "object": "Visual_Symbol_3"}
+      {"subject": "Profile_Page_1", "predicate": "displays_symbol", "object": "Visual_Symbol_3"},
+      {"subject": "Person_1", "predicate": "affiliated_with", "object": "Organisation_1"}
     ]
   },
   "viber_1": {
@@ -38,14 +31,12 @@
       {"subject": "Profile_Page_1", "predicate": "rdf:type", "object": "Profile_Page"},
       {"subject": "Profile_Page_1", "predicate": "platform", "object": "http://dbpedia.org/resource/Viber"},
       {"subject": "Person_1", "predicate": "rdf:type", "object": "http://dbpedia.org/ontology/Person"},
-      {"subject": "Person_1", "predicate": "rdfs:label", "object": "Matthew Archer"},
-      {"subject": "Location_1", "predicate": "rdf:type", "object": "http://dbpedia.org/ontology/Location"},
-      {"subject": "Location_1", "predicate": "owl:sameAs", "object": "http://dbpedia.org/resource/United_Kingdom"}
+      {"subject": "Person_1", "predicate": "rdfs:label", "object": "Matthew Armstrong"}
     ],
     "relations": [
-      {"subject": "Profile_Page_1", "predicate": "depicts_person", "object": "Person_1"},
       {"subject": "Person_1", "predicate": "has_phone_number", "object": "+44 7405 812 443"},
-      {"subject": "Location_1", "predicate": "has_phone_code", "object": "+44"}
+      {"subject": "Profile_Page_1", "predicate": "depicts_person", "object": "Person_1"},
+      {"subject": "Profile_Page_1", "predicate": "associated_with_country", "object": "http://dbpedia.org/resource/United_Kingdom"}
     ]
   },
   "viber_2": {
@@ -53,14 +44,12 @@
       {"subject": "Profile_Page_1", "predicate": "rdf:type", "object": "Profile_Page"},
       {"subject": "Profile_Page_1", "predicate": "platform", "object": "http://dbpedia.org/resource/Viber"},
       {"subject": "Person_1", "predicate": "rdf:type", "object": "http://dbpedia.org/ontology/Person"},
-      {"subject": "Person_1", "predicate": "rdfs:label", "object": "Raymond Caldwell"},
-      {"subject": "Location_1", "predicate": "rdf:type", "object": "http://dbpedia.org/ontology/Location"},
-      {"subject": "Location_1", "predicate": "owl:sameAs", "object": "http://dbpedia.org/resource/United_Kingdom"}
+      {"subject": "Person_1", "predicate": "rdfs:label", "object": "Robert Carter"}
     ],
     "relations": [
-      {"subject": "Profile_Page_1", "predicate": "depicts_person", "object": "Person_1"},
       {"subject": "Person_1", "predicate": "has_phone_number", "object": "+44 7511 998 204"},
-      {"subject": "Location_1", "predicate": "has_phone_code", "object": "+44"}
+      {"subject": "Profile_Page_1", "predicate": "depicts_person", "object": "Person_1"},
+      {"subject": "Profile_Page_1", "predicate": "associated_with_country", "object": "http://dbpedia.org/resource/United_Kingdom"}
     ]
   },
   "dashboard": {
@@ -76,7 +65,8 @@
       {"subject": "Investment_Account_Page_1", "predicate": "depicts_person", "object": "Person_1"},
       {"subject": "Investment_Account_Page_1", "predicate": "has_url", "object": "https://capitalfxpro-market.net"},
       {"subject": "Investment_Account_Page_1", "predicate": "has_total_balance", "object": "€12,564.32"},
-      {"subject": "Investment_Account_Page_1", "predicate": "has_total_profit", "object": "€384.15"}
+      {"subject": "Investment_Account_Page_1", "predicate": "has_profit", "object": "€384.15"},
+      {"subject": "Person_1", "predicate": "has_role", "object": "Standard Investor"}
     ]
   }
 }
